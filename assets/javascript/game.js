@@ -1,6 +1,8 @@
 var playerCount = 0;
-var player_1_Score = 0; 
-var player_2_Score = 0; 
+var player_1_Wins = 0; 
+var player_2_Wins = 0; 
+var player_1_Losses = 0; 
+var player_2_Losses = 0; 
 var player_1_Choice, player_2_Choice = "";
 var player_1_Name, player_2_Name = "";
 
@@ -19,7 +21,7 @@ database = firebase.database();
 // Checking playerCount in database
 database.ref().on("value", function(snapshot) {
 
-	console.log("Player 1 score: " + player_1_Score + " Player 2 score " + player_2_Score);
+	console.log("Player 1 wins: " + player_1_Wins + " Player 2 wins " + player_2_Wins);
 
 	playerCount = snapshot.child("players").numChildren();
 	console.log("Player Count from DB: " + playerCount);
@@ -89,23 +91,33 @@ function rpsGameValidate(player_1_Choice, player_2_Choice) {
 			   ((player_1_Choice === 'paper') && (player_2_Choice === 'rock')) ||
 			   ((player_1_Choice === 'scissors') && (player_2_Choice === 'paper'))) {
 
-		++player_1_Score;
-		console.log("player_1_Score" + player_1_Score);
-
-		// Setting wins in database to updated player1Score
-		database.ref("/players/1/wins").set(player_1_Score);
+		++player_1_Wins;
+		++player_2_Losses;
+		console.log("player_1_Wins " + player_1_Wins + " player 2 loss: " + player_2_Losses);
 
 	}else {
-		++player_2_Score;
-		console.log("player_2_Score" + player_2_Score);
-
-		// Setting wins in database to updated player2Score		
-		database.ref("/players/2/wins").set(player_2_Score);
+		++player_2_Wins;
+		++player_1_Losses;
+		console.log("player_2_Score " + player_2_Wins + " player 1 loss: " + player_1_Losses);
 
 	}
 
+	// Call to set wins/losses to database
+	setWinsAndLossesInDatabase();
+
 	// Resetting player choices after each round
 	resetPlayerChoices();
+
+}
+
+// Function to set updated wins and losses for each player
+function setWinsAndLossesInDatabase() {
+	// Setting updated player1 wins/losses in database
+	database.ref("/players/1/wins").set(player_1_Wins);
+	database.ref("/players/1/losses").set(player_1_Losses);
+	// Setting updated player2 wins/losses in database	
+	database.ref("/players/2/wins").set(player_2_Wins);
+	database.ref("/players/2/losses").set(player_2_Losses);
 
 }
 
@@ -124,7 +136,7 @@ function resetPlayerChoices() {
 
 // On click of rock, paper or scissors
 $(".choices").on("click", function() {
-	console.log("player1 score: " + player_1_Score + " player2 score: " + player_2_Score);
+
 	if($(this).parent().hasClass('leftSidePanel')) {
 		player_1_Choice = $(this).data('choice');
 
