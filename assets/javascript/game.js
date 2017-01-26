@@ -1,4 +1,6 @@
-var playerCount, player_1_Score, player_2_Score, tie = 0;
+var playerCount = 0;
+var player_1_Score = 0; 
+var player_2_Score = 0; 
 var player_1_Choice, player_2_Choice = "";
 var player_1_Name, player_2_Name = "";
 
@@ -17,8 +19,14 @@ database = firebase.database();
 // Checking playerCount in database
 database.ref().on("value", function(snapshot) {
 
+	console.log("Player 1 score: " + player_1_Score + " Player 2 score " + player_2_Score);
+
 	playerCount = snapshot.child("players").numChildren();
 	console.log("Player Count from DB: " + playerCount);
+	player_1_Choice = snapshot.child("players").child("1").child("choices").val();
+	console.log("Player 1 choice from db: " + player_1_Choice);
+	player_2_Choice = snapshot.child("players").child("2").child("choices").val();
+	console.log("Player 2 choice from db: " + player_2_Choice);
 });
 
 // On click of Start Button
@@ -75,24 +83,24 @@ $("#startButton").on("click", function() {
 function rpsGameValidate(player_1_Choice, player_2_Choice) {
 	if (player_1_Choice === player_2_Choice) {
 
-		tie ++;
-		console.log("Tie" + tie);
+		console.log("Tie");
 
 	}else if (((player_1_Choice === 'rock') && (player_2_Choice === 'scissors')) ||
 			   ((player_1_Choice === 'paper') && (player_2_Choice === 'rock')) ||
 			   ((player_1_Choice === 'scissors') && (player_2_Choice === 'paper'))) {
 
-		player_1_Score ++;
+		++player_1_Score;
 		console.log("player_1_Score" + player_1_Score);
 
 	}else {
-		player_2_Score ++;
+		++player_2_Score;
 		console.log("player_2_Score" + player_2_Score);
 	}
 }
 
 // On click of rock, paper or scissors
 $(".choices").on("click", function() {
+	console.log("player1 score: " + player_1_Score + " player2 score: " + player_2_Score);
 	if($(this).parent().hasClass('leftSidePanel')) {
 		player_1_Choice = $(this).data('choice');
 
@@ -104,12 +112,10 @@ $(".choices").on("click", function() {
 
 		database.ref("/players/2/choices").set(player_2_Choice);
 	}
-	// console.log("player 1 " + player_1_Choice + " player 2 " + player_2_Choice);
 
-	if((player_1_Choice !== "") && (player_2_Choice !== "")) {
+
+	if((player_1_Choice !== null) && (player_2_Choice !== null)) {
 		rpsGameValidate(player_1_Choice,player_2_Choice);
-		player_1_Choice === "";
-		player_2_Choice === "";
 	}
 	// console.log($(this).data('choice'));
 })
