@@ -71,6 +71,7 @@ $("#startButton").on("click", function() {
 	$(".choices").attr('disabled', false);
 })
 
+// RPS Game function
 function rpsGameValidate(player_1_Choice, player_2_Choice) {
 	if (player_1_Choice === player_2_Choice) {
 
@@ -90,11 +91,18 @@ function rpsGameValidate(player_1_Choice, player_2_Choice) {
 	}
 }
 
+// On click of rock, paper or scissors
 $(".choices").on("click", function() {
 	if($(this).parent().hasClass('leftSidePanel')) {
 		player_1_Choice = $(this).data('choice');
+
+		// Add choice to database
+		database.ref("/players/1/choices").set(player_1_Choice);
+
 	}else {
 		player_2_Choice = $(this).data('choice');
+
+		database.ref("/players/2/choices").set(player_2_Choice);
 	}
 	// console.log("player 1 " + player_1_Choice + " player 2 " + player_2_Choice);
 
