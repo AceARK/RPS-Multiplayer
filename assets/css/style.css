@@ -3,7 +3,7 @@
 	width: 200px;
 }
 
-#message, #chatWindow, .leftSidePanel, .rightSidePanel {
+.messages, #chatWindow, .leftSidePanel, .rightSidePanel {
 	border: 1px solid black;
 	min-height: 100px;
 }

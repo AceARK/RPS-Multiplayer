@@ -19,21 +19,6 @@ firebase.initializeApp(config);
 
 database = firebase.database();
 
-// Checking playerCount in database
-database.ref().on("value", function(snapshot) {
-
-	console.log("Player 1 wins: " + player_1_Wins + " Player 2 wins " + player_2_Wins);
-
-	turns = snapshot.child("turns").val();
-	console.log("turns: " + turns);
-	playerCount = snapshot.child("players").numChildren();
-	console.log("Player Count from DB: " + playerCount);
-	player_1_Choice = snapshot.child("players").child("1").child("choice").val();
-	console.log("Player 1 choice from db: " + player_1_Choice);
-	player_2_Choice = snapshot.child("players").child("2").child("choice").val();
-	console.log("Player 2 choice from db: " + player_2_Choice);
-});
-
 // On click of Start Button
 $("#startButton").on("click", function() {
 
@@ -51,9 +36,6 @@ $("#startButton").on("click", function() {
 			
 		}
 
-		$("#player_1_Name").html(player_1_Name);
-	// refPath = "/players/1";
-
 	}else {
 		// Take player as player2
 		player_2_Name = $("#userName").val();
@@ -67,10 +49,9 @@ $("#startButton").on("click", function() {
 			
 		}
 
-		$("#player_2_Name").html(player_2_Name);
-
 	}
 
+	// Increment player count
 	++playerCount;
 	console.log("Incremented Player Count: " + playerCount);
 	console.log("PlayerCount to push: " + playerCount);
@@ -84,7 +65,90 @@ $("#startButton").on("click", function() {
 	$(".choices").attr('disabled', false);
 })
 
-// RPS Game function
+/*
+To Do -
+- Show only current player's game choices, hide the rest.
+- On choosing option, disable other choices, and highlight/enlarge chosen.
+*/
+
+// On click of rock, paper or scissors game choices
+$(".choices").on("click", function() {
+
+	// Increment turns and update to database
+	++turns;
+	database.ref("/turns").set(turns);
+
+	if($(this).parent().hasClass('leftSidePanel')) {
+		// Get choice
+		player_1_Choice = $(this).data('choice');
+		// Add choice to database
+		database.ref("/players/1/choice").set(player_1_Choice);
+
+	}else {
+		// Get choice
+		player_2_Choice = $(this).data('choice');
+		// Add choice to the database
+		database.ref("/players/2/choice").set(player_2_Choice);
+	}
+
+	// switch(turn) {
+	// 	case 0:
+	// 		$("#turnMessage").html("Waiting for " player_1_Name + " to play.");
+	// 		break;
+
+	// 	case 1:
+	// 		$("#turnMessage").html("Waiting for " player_2_Name + " to play.");
+	// 		break;
+
+	// 	case 2:
+			
+	// }
+
+	if(turns === 2) {
+		// Run RPS game logic
+		rpsGameValidate(player_1_Choice,player_2_Choice);
+	}
+
+})
+
+/*
+To Do -
+- Display turn info on each player's messages section.
+- Update it each time an event occurs i.e. choice chosen, loss or win.
+*/
+
+/*
+To Do After -
+- Player disconnect configuration.
+- Chat functionality.
+*/
+
+// Display/Set variables on change in database
+database.ref().on("value", function(snapshot) {
+
+	console.log("Player 1 wins: " + player_1_Wins + " Player 2 wins " + player_2_Wins);
+
+	turns = snapshot.child("turns").val();
+	console.log("turns: " + turns);
+	playerCount = snapshot.child("players").numChildren();
+	console.log("Player Count from DB: " + playerCount);
+	player_1_Choice = snapshot.child("players").child("1").child("choice").val();
+	console.log("Player 1 choice from db: " + player_1_Choice);
+	player_2_Choice = snapshot.child("players").child("2").child("choice").val();
+	console.log("Player 2 choice from db: " + player_2_Choice);
+	player_1_Name = snapshot.child("players").child("1").child("name").val();
+	player_2_Name = snapshot.child("players").child("2").child("name").val();
+
+	// Gather player name from database if exists, and display
+	if(player_1_Name !== null) {
+		$("#player_1_Name").html(player_1_Name);
+	}
+	if(player_2_Name !== null) {
+		$("#player_2_Name").html(player_2_Name);
+	}
+});
+
+// RPS Game logic
 function rpsGameValidate(player_1_Choice, player_2_Choice) {
 	if (player_1_Choice === player_2_Choice) {
 
@@ -97,24 +161,34 @@ function rpsGameValidate(player_1_Choice, player_2_Choice) {
 		++player_1_Wins;
 		++player_2_Losses;
 		console.log("player_1_Wins " + player_1_Wins + " player 2 loss: " + player_2_Losses);
+		$("#message").html(player_1_Name + " Wins!");
+		// setTimeout($("#message").html(""), 2000);
 
 	}else {
 		++player_2_Wins;
 		++player_1_Losses;
 		console.log("player_2_Score " + player_2_Wins + " player 1 loss: " + player_1_Losses);
-
+		$("#message").html(player_2_Name + " Wins!");
+		// setTimeout($("#message").html(""), 2000);
 	}
+
+	$("#turnMessage").html("");
 
 	// Call to set wins/losses to database
 	setWinsAndLossesInDatabase();
 
-	// Resetting player choices after each round
-	// resetPlayerChoices();
+	setTurnsAndClearChoice();
 
+}
+
+function setTurnsAndClearChoice() {
 	// Set turns to 0 for new round
 	turns = 0;
 	database.ref("/turns").set(turns);
-
+	player_1_Choice = null;
+	player_2_Choice = null;
+	database.ref("/player/1/choice").set(player_1_Choice);
+	database.ref("/player/2/choice").set(player_2_Choice);
 }
 
 // Function to set updated wins and losses for each player
@@ -127,44 +201,3 @@ function setWinsAndLossesInDatabase() {
 	database.ref("/players/2/losses").set(player_2_Losses);
 
 }
-
-// Function to reset player choices at the end of each round
-// function resetPlayerChoices() {
-
-// 	// setting choices to null
-// 	player_1_Choice = null;
-// 	player_2_Choice = null;
-
-// 	// Updating to database
-// 	// database.ref("/players/1").child("choice").remove();
-// 	// database.ref("/players/2").child("choice").remove();
-
-// }
-
-// On click of rock, paper or scissors
-$(".choices").on("click", function() {
-
-	// Increment turns and update to database
-	++turns;
-	database.ref("/turns").set(turns);
-
-	if($(this).parent().hasClass('leftSidePanel')) {
-		player_1_Choice = $(this).data('choice');
-
-		// Add choice to database
-		database.ref("/players/1/choice").set(player_1_Choice);
-
-	}else {
-		player_2_Choice = $(this).data('choice');
-
-		database.ref("/players/2/choice").set(player_2_Choice);
-	}
-
-	// Evaluate only if both players have chosen i.e. turns = 2
-	if(turns === 2) {
-		// if((player_1_Choice !== null) && (player_2_Choice !== null)) {
-			rpsGameValidate(player_1_Choice,player_2_Choice);
-		// }
-	}
-
-})
