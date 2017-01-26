@@ -92,9 +92,16 @@ function rpsGameValidate(player_1_Choice, player_2_Choice) {
 		++player_1_Score;
 		console.log("player_1_Score" + player_1_Score);
 
+		// Setting wins in database to updated player1Score
+		database.ref("/players/1/wins").set(player_1_Score);
+
 	}else {
 		++player_2_Score;
 		console.log("player_2_Score" + player_2_Score);
+
+		// Setting wins in database to updated player2Score		
+		database.ref("/players/1/wins").set(player_1_Score);
+
 	}
 }
 
@@ -117,5 +124,5 @@ $(".choices").on("click", function() {
 	if((player_1_Choice !== null) && (player_2_Choice !== null)) {
 		rpsGameValidate(player_1_Choice,player_2_Choice);
 	}
-	// console.log($(this).data('choice'));
+
 })
