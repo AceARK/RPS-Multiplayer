@@ -23,9 +23,9 @@ database.ref().on("value", function(snapshot) {
 
 	playerCount = snapshot.child("players").numChildren();
 	console.log("Player Count from DB: " + playerCount);
-	player_1_Choice = snapshot.child("players").child("1").child("choices").val();
+	player_1_Choice = snapshot.child("players").child("1").child("choice").val();
 	console.log("Player 1 choice from db: " + player_1_Choice);
-	player_2_Choice = snapshot.child("players").child("2").child("choices").val();
+	player_2_Choice = snapshot.child("players").child("2").child("choice").val();
 	console.log("Player 2 choice from db: " + player_2_Choice);
 });
 
@@ -117,8 +117,8 @@ function resetPlayerChoices() {
 	player_2_Choice = null;
 
 	// Updating to database
-	database.ref("/players/1").child("choices").remove();
-	database.ref("/players/2").child("choices").remove();
+	database.ref("/players/1").child("choice").remove();
+	database.ref("/players/2").child("choice").remove();
 
 }
 
@@ -129,12 +129,12 @@ $(".choices").on("click", function() {
 		player_1_Choice = $(this).data('choice');
 
 		// Add choice to database
-		database.ref("/players/1/choices").set(player_1_Choice);
+		database.ref("/players/1/choice").set(player_1_Choice);
 
 	}else {
 		player_2_Choice = $(this).data('choice');
 
-		database.ref("/players/2/choices").set(player_2_Choice);
+		database.ref("/players/2/choice").set(player_2_Choice);
 	}
 
 
