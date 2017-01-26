@@ -100,7 +100,7 @@ function rpsGameValidate(player_1_Choice, player_2_Choice) {
 		console.log("player_2_Score" + player_2_Score);
 
 		// Setting wins in database to updated player2Score		
-		database.ref("/players/1/wins").set(player_1_Score);
+		database.ref("/players/2/wins").set(player_2_Score);
 
 	}
 }
