@@ -14,21 +14,34 @@ firebase.initializeApp(config);
 
 database = firebase.database();
 
+// Checking playerCount in database
+database.ref().on("value", function(snapshot) {
 
-// To do - Code to get /player.numChildren from database to get playerCount, set playerCount to that value
+	playerCount = snapshot.child("players").numChildren();
+	console.log("Player Count from DB: " + playerCount);
+});
 
+// On click of Start Button
 $("#startButton").on("click", function() {
-
-	// Checking playerCount in database
-	database.ref("/players").once("value", function(snapshot) {
-
-		playerCount = snapshot.numChildren();
-		console.log(playerCount);
-	});
 
 	// Code to distinguish player1 and player2
 	if(playerCount < 1) {
+		// If number of players = 1, take name as player 1 else player 2
+		player_1_Name = $("#userName").val();
 
+		// Preparing player1 data to pass to database
+		var playerData = {
+
+			name: player_1_Name,
+			wins: 0,
+			losses: 0
+			
+		}
+
+		$("#player_1_Name").html(player_1_Name);
+	// refPath = "/players/1";
+
+	}else {
 		// Take player as player2
 		player_2_Name = $("#userName").val();
 
@@ -41,30 +54,17 @@ $("#startButton").on("click", function() {
 			
 		}
 
-		refPath = "/players/2";
+		$("#player_2_Name").html(player_2_Name);
 
-	}else {
-		
-		// If number of players = 1, take name as player 1 else player 2
-		player_1_Name = $("#userName").val();
-
-		// Preparing player1 data to pass to database
-		var playerData = {
-
-			name: player_1_Name,
-			wins: 0,
-			losses: 0
-			
-		}
-		
-		refPath = "/players/1";
 	}
 
+	++playerCount;
+	console.log("Incremented Player Count: " + playerCount);
+	console.log("PlayerCount to push: " + playerCount);
+	playerCountToPush = playerCount.toString();
+
 	// Creating new player in database and passing player data to it
-	database.ref(refPath).set(playerData);
-
-
-	$("#player_1_Name").html(player_1_Name);
+	database.ref("players/" + playerCountToPush).set(playerData);
 
 	// Hiding start components and enabling game choices
 	$(".displayBeforeStart").hide();
