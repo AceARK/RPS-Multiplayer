@@ -5,6 +5,7 @@ var player_1_Losses = 0;
 var player_2_Losses = 0; 
 var player_1_Choice, player_2_Choice = "";
 var player_1_Name, player_2_Name = "";
+var turns = 0;
 
 var config = {
     apiKey: "AIzaSyALngADSiFUCFCzIpx8eOoz_qByHqgAtQI",
@@ -23,6 +24,8 @@ database.ref().on("value", function(snapshot) {
 
 	console.log("Player 1 wins: " + player_1_Wins + " Player 2 wins " + player_2_Wins);
 
+	turns = snapshot.child("turns").val();
+	console.log("turns: " + turns);
 	playerCount = snapshot.child("players").numChildren();
 	console.log("Player Count from DB: " + playerCount);
 	player_1_Choice = snapshot.child("players").child("1").child("choice").val();
@@ -106,7 +109,11 @@ function rpsGameValidate(player_1_Choice, player_2_Choice) {
 	setWinsAndLossesInDatabase();
 
 	// Resetting player choices after each round
-	resetPlayerChoices();
+	// resetPlayerChoices();
+
+	// Set turns to 0 for new round
+	turns = 0;
+	database.ref("/turns").set(turns);
 
 }
 
@@ -122,20 +129,24 @@ function setWinsAndLossesInDatabase() {
 }
 
 // Function to reset player choices at the end of each round
-function resetPlayerChoices() {
+// function resetPlayerChoices() {
 
-	// setting choices to null
-	player_1_Choice = null;
-	player_2_Choice = null;
+// 	// setting choices to null
+// 	player_1_Choice = null;
+// 	player_2_Choice = null;
 
-	// Updating to database
-	database.ref("/players/1").child("choice").remove();
-	database.ref("/players/2").child("choice").remove();
+// 	// Updating to database
+// 	// database.ref("/players/1").child("choice").remove();
+// 	// database.ref("/players/2").child("choice").remove();
 
-}
+// }
 
 // On click of rock, paper or scissors
 $(".choices").on("click", function() {
+
+	// Increment turns and update to database
+	++turns;
+	database.ref("/turns").set(turns);
 
 	if($(this).parent().hasClass('leftSidePanel')) {
 		player_1_Choice = $(this).data('choice');
@@ -149,9 +160,11 @@ $(".choices").on("click", function() {
 		database.ref("/players/2/choice").set(player_2_Choice);
 	}
 
-
-	if((player_1_Choice !== null) && (player_2_Choice !== null)) {
-		rpsGameValidate(player_1_Choice,player_2_Choice);
+	// Evaluate only if both players have chosen i.e. turns = 2
+	if(turns === 2) {
+		// if((player_1_Choice !== null) && (player_2_Choice !== null)) {
+			rpsGameValidate(player_1_Choice,player_2_Choice);
+		// }
 	}
 
 })
