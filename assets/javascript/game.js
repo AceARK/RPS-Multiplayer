@@ -103,6 +103,23 @@ function rpsGameValidate(player_1_Choice, player_2_Choice) {
 		database.ref("/players/2/wins").set(player_2_Score);
 
 	}
+
+	// Resetting player choices after each round
+	resetPlayerChoices();
+
+}
+
+// Function to reset player choices at the end of each round
+function resetPlayerChoices() {
+
+	// setting choices to null
+	player_1_Choice = null;
+	player_2_Choice = null;
+
+	// Updating to database
+	database.ref("/players/1").child("choices").remove();
+	database.ref("/players/2").child("choices").remove();
+
 }
 
 // On click of rock, paper or scissors
