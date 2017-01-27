@@ -73,12 +73,6 @@ $("#startButton").on("click", function() {
 	$(".choices").attr('disabled', false);
 });
 
-/*
-To Do -
-- Show only current player's game choices, hide the rest.
-- On choosing option, disable other choices, and highlight/enlarge chosen.
-*/
-
 // On click of rock, paper or scissors game choices
 $(".choices").on("click", function() {
 
@@ -99,28 +93,7 @@ $(".choices").on("click", function() {
 		database.ref("/players/2/choice").set(player_2_Choice);
 	}
 
-
-
-	// switch(turn) {
-	// 	case 0:
-	// 		$("#turnMessage").html("Waiting for " player_1_Name + " to play.");
-	// 		break;
-
-	// 	case 1:
-	// 		$("#turnMessage").html("Waiting for " player_2_Name + " to play.");
-	// 		break;
-
-	// 	case 2:
-			
-	// }
-
 })
-
-/*
-To Do -
-- Display turn info on each player's messages section.
-- Update it each time an event occurs i.e. choice chosen, loss or win.
-*/
 
 /*
 To Do After -
@@ -206,8 +179,34 @@ database.ref().on("value", function(snapshot) {
 
 	// If both players have chosen, 
 	if(turns === 2) {
-		// Run RPS game logic
-		rpsGameValidate(player_1_Choice,player_2_Choice);
+
+		if(player_1_Name == thisWindowPlayer) {
+			// Run RPS game logic
+			rpsGameValidate(player_1_Choice,player_2_Choice);
+			if(winner === player_1_Name) {
+
+				++player_1_Wins;
+				++player_2_Losses;
+				database.ref("/players/1/wins").set(player_1_Wins);
+				database.ref("/players/2/losses").set(player_2_Losses);
+			}
+		}
+
+		if(player_2_Name == thisWindowPlayer) {
+			// Run RPS game logic
+			rpsGameValidate(player_1_Choice,player_2_Choice);
+			if(winner === player_2_Name) {
+
+				++player_2_Wins;
+				++player_1_Losses;
+				database.ref("/players/1/losses").set(player_1_Losses);
+				database.ref("/players/2/wins").set(player_2_Wins);
+			}
+		}
+		// Set turns to 0 for new round
+		turns = 0;
+		database.ref("/turns").set(turns);
+		
 	}
 
 });
@@ -215,51 +214,26 @@ database.ref().on("value", function(snapshot) {
 // RPS Game logic
 function rpsGameValidate(player_1_Choice, player_2_Choice) {
 	if (player_1_Choice === player_2_Choice) {
-
-		console.log("Tie");
+		winner = "";
+		$("#message").html("Tie");
 
 	}else if (((player_1_Choice === 'rock') && (player_2_Choice === 'scissors')) ||
 			   ((player_1_Choice === 'paper') && (player_2_Choice === 'rock')) ||
 			   ((player_1_Choice === 'scissors') && (player_2_Choice === 'paper'))) {
-
-		++player_1_Wins;
-		++player_2_Losses;
+		winner = player_1_Name;
 		console.log("player_1_Wins " + player_1_Wins + " player 2 loss: " + player_2_Losses);
 		$("#message").html(player_1_Name + " Wins!");
-		// setTimeout($("#message").html(""), 2000);
 
 	}else {
-		++player_2_Wins;
-		++player_1_Losses;
+		winner = player_2_Name;
 		console.log("player_2_Score " + player_2_Wins + " player 1 loss: " + player_1_Losses);
 		$("#message").html(player_2_Name + " Wins!");
-		// setTimeout($("#message").html(""), 2000);
 	}
 
-	// Call to set wins/losses to database
-	// setWinsAndLossesInDatabase();
-
-	// setTurnsAndClearChoice();
+	setTimeout(clearMessage,4000);
 
 }
 
-function setTurnsAndClearChoice() {
-	// Set turns to 0 for new round
-	turns = 0;
-	database.ref("/turns").set(turns);
-	player_1_Choice = null;
-	player_2_Choice = null;
-	database.ref("/player/1/choice").set(player_1_Choice);
-	database.ref("/player/2/choice").set(player_2_Choice);
-}
-
-// Function to set updated wins and losses for each player
-function setWinsAndLossesInDatabase() {
-	// Setting updated player1 wins/losses in database
-	database.ref("/players/1/wins").set(player_1_Wins);
-	database.ref("/players/1/losses").set(player_1_Losses);
-	// Setting updated player2 wins/losses in database	
-	database.ref("/players/2/wins").set(player_2_Wins);
-	database.ref("/players/2/losses").set(player_2_Losses);
-
+function clearMessage() {
+	$("#message").html("");
 }
