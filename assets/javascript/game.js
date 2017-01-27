@@ -5,7 +5,8 @@ var player_1_Losses = 0;
 var player_2_Losses = 0; 
 var player_1_Choice, player_2_Choice = "";
 var player_1_Name, player_2_Name = "";
-var turns = 0;
+var turns;
+var thisWindowPlayer = "";
 
 var config = {
     apiKey: "AIzaSyALngADSiFUCFCzIpx8eOoz_qByHqgAtQI",
@@ -18,6 +19,8 @@ var config = {
 firebase.initializeApp(config);
 
 database = firebase.database();
+
+$(".choices").hide();
 
 // On click of Start Button
 $("#startButton").on("click", function() {
@@ -48,7 +51,9 @@ $("#startButton").on("click", function() {
 			losses: 0
 			
 		}
-
+		// Setting and adding turns to database
+		turns = 0;
+		database.ref("/turns").set(turns);
 	}
 
 	// Increment player count
@@ -57,13 +62,16 @@ $("#startButton").on("click", function() {
 	console.log("PlayerCount to push: " + playerCount);
 	playerCountToPush = playerCount.toString();
 
+	// Getting name of player using the current window
+	thisWindowPlayer = playerData.name;
+
 	// Creating new player in database and passing player data to it
 	database.ref("players/" + playerCountToPush).set(playerData);
-
+	
 	// Hiding start components and enabling game choices
 	$(".displayBeforeStart").hide();
 	$(".choices").attr('disabled', false);
-})
+});
 
 /*
 To Do -
@@ -90,6 +98,8 @@ $(".choices").on("click", function() {
 		// Add choice to the database
 		database.ref("/players/2/choice").set(player_2_Choice);
 	}
+
+
 
 	// switch(turn) {
 	// 	case 0:
@@ -138,6 +148,58 @@ database.ref().on("value", function(snapshot) {
 	console.log("Player 2 choice from db: " + player_2_Choice);
 	player_1_Name = snapshot.child("players").child("1").child("name").val();
 	player_2_Name = snapshot.child("players").child("2").child("name").val();
+	console.log("Player 1 name from db: " + player_1_Name);
+	console.log("Player 2 name from db: " + player_2_Name);
+	console.log("This window player: " +thisWindowPlayer);
+
+	if(playerCount === 1) {
+
+		$("#gameStat1").hide();
+
+		if(player_1_Name == thisWindowPlayer) {
+
+			$("#playerMessage").html("Hi " + player_1_Name + ". You are Player 1.");
+
+		}
+
+	}else if(playerCount === 2) {
+
+		$("#gameStat2").hide();
+
+		if(player_2_Name == thisWindowPlayer) {
+
+			$("#playerMessage").html("Hi " + player_2_Name + ". You are Player 2.");
+
+			if(turns === 0) {
+
+				$("#gameMessage").html("<p>Waiting for " + player_1_Name + " to choose.</p>");
+
+			}else if(turns === 1) {
+
+				$("#gameMessage").html("<p>It's your turn.</p>");
+
+				$(".rightSidePanel> .choices").show();
+			}
+			
+		}
+
+		if(player_1_Name == thisWindowPlayer) {
+
+			if(turns === 0) {
+
+				$("#gameMessage").html("<br>It's your turn.</p>");
+
+				$(".leftSidePanel> .choices").show();
+
+			}else if(turns === 1) {
+
+				$("#gameMessage").html("<br>Waiting for " + player_2_Name + " to choose.</p>");
+				
+			}
+
+		}
+	
+	}
 
 	// Gather player name from database if exists, and display
 	if(player_1_Name !== null) {
@@ -146,6 +208,7 @@ database.ref().on("value", function(snapshot) {
 	if(player_2_Name !== null) {
 		$("#player_2_Name").html(player_2_Name);
 	}
+
 });
 
 // RPS Game logic
