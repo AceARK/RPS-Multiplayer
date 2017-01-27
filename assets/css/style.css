@@ -12,3 +12,7 @@ button {
 	outline: none !important;
 }
 
+.currentPlayer {
+	border: 2px solid green;
+}
+

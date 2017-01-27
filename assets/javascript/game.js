@@ -76,22 +76,22 @@ $("#startButton").on("click", function() {
 // On click of rock, paper or scissors game choices
 $(".choices").on("click", function() {
 
-	// Increment turns and update to database
-	++turns;
-	database.ref("/turns").set(turns);
-
 	if($(this).parent().hasClass('leftSidePanel')) {
 		// Get choice
 		player_1_Choice = $(this).data('choice');
 		// Add choice to database
 		database.ref("/players/1/choice").set(player_1_Choice);
+		turns = 1;
 
 	}else {
 		// Get choice
 		player_2_Choice = $(this).data('choice');
 		// Add choice to the database
 		database.ref("/players/2/choice").set(player_2_Choice);
+		turns = 2;
 	}
+
+	database.ref("/turns").set(turns);
 
 })
 
@@ -147,6 +147,7 @@ database.ref().on("value", function(snapshot) {
 				$("#gameMessage").html("<p>It's your turn.</p>");
 
 				$(".rightSidePanel> .choices").show();
+
 			}
 			
 		}
@@ -180,9 +181,12 @@ database.ref().on("value", function(snapshot) {
 	// If both players have chosen, 
 	if(turns === 2) {
 
+		turns = 0;
+		database.ref("/turns").set(turns);
+		rpsGameValidate(player_1_Choice,player_2_Choice);
 		if(player_1_Name == thisWindowPlayer) {
 			// Run RPS game logic
-			rpsGameValidate(player_1_Choice,player_2_Choice);
+			// rpsGameValidate(player_1_Choice,player_2_Choice);
 			if(winner === player_1_Name) {
 
 				++player_1_Wins;
@@ -194,7 +198,7 @@ database.ref().on("value", function(snapshot) {
 
 		if(player_2_Name == thisWindowPlayer) {
 			// Run RPS game logic
-			rpsGameValidate(player_1_Choice,player_2_Choice);
+		
 			if(winner === player_2_Name) {
 
 				++player_2_Wins;
@@ -203,10 +207,6 @@ database.ref().on("value", function(snapshot) {
 				database.ref("/players/2/wins").set(player_2_Wins);
 			}
 		}
-		// Set turns to 0 for new round
-		turns = 0;
-		database.ref("/turns").set(turns);
-		
 	}
 
 });
