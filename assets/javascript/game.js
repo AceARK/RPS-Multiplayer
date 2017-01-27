@@ -120,6 +120,8 @@ database.ref().on("value", function(snapshot) {
 	console.log("Player 2 name from db: " + player_2_Name);
 	console.log("This window player: " +thisWindowPlayer);
 
+	
+
 	if(playerCount === 1) {
 
 		$("#gameStat1").hide();
@@ -230,6 +232,7 @@ database.ref().on("value", function(snapshot) {
 $("#postComment").on("click", function(){
 	var comment = $("#comment").val();
 	database.ref("/chats").push(comment);
+	$("#comment").val("");
 })
 
 // RPS Game logic
