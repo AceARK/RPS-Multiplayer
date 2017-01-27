@@ -114,11 +114,6 @@ $(".choices").on("click", function() {
 			
 	// }
 
-	if(turns === 2) {
-		// Run RPS game logic
-		rpsGameValidate(player_1_Choice,player_2_Choice);
-	}
-
 })
 
 /*
@@ -194,7 +189,7 @@ database.ref().on("value", function(snapshot) {
 			}else if(turns === 1) {
 
 				$("#gameMessage").html("<br>Waiting for " + player_2_Name + " to choose.</p>");
-				
+
 			}
 
 		}
@@ -207,6 +202,12 @@ database.ref().on("value", function(snapshot) {
 	}
 	if(player_2_Name !== null) {
 		$("#player_2_Name").html(player_2_Name);
+	}
+
+	// If both players have chosen, 
+	if(turns === 2) {
+		// Run RPS game logic
+		rpsGameValidate(player_1_Choice,player_2_Choice);
 	}
 
 });
@@ -235,12 +236,10 @@ function rpsGameValidate(player_1_Choice, player_2_Choice) {
 		// setTimeout($("#message").html(""), 2000);
 	}
 
-	$("#turnMessage").html("");
-
 	// Call to set wins/losses to database
-	setWinsAndLossesInDatabase();
+	// setWinsAndLossesInDatabase();
 
-	setTurnsAndClearChoice();
+	// setTurnsAndClearChoice();
 
 }
 
