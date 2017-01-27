@@ -226,6 +226,12 @@ database.ref().on("value", function(snapshot) {
 
 });
 
+// Chat functionality
+$("#postComment").on("click", function(){
+	var comment = $("#comment").val();
+	database.ref("/chats").push(comment);
+})
+
 // RPS Game logic
 function rpsGameValidate(player_1_Choice, player_2_Choice) {
 	if (player_1_Choice === player_2_Choice) {
