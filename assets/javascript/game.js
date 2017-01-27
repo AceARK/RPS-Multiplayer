@@ -167,6 +167,19 @@ database.ref().on("value", function(snapshot) {
 			}
 
 		}
+
+		if(turns === 0) {
+
+			$(".leftSidePanel").addClass('currentPlayer');
+			$(".rightSidePanel").removeClass('currentPlayer');
+
+		}else if(turns === 1) {
+
+			$(".leftSidePanel").removeClass('currentPlayer');
+			$(".rightSidePanel").addClass('currentPlayer');
+
+		}
+
 	
 	}
 
@@ -181,6 +194,8 @@ database.ref().on("value", function(snapshot) {
 	// If both players have chosen, 
 	if(turns === 2) {
 
+		$(".leftSidePanel").removeClass('currentPlayer');
+		$(".rightSidePanel").removeClass('currentPlayer');
 		turns = 0;
 		database.ref("/turns").set(turns);
 		rpsGameValidate(player_1_Choice,player_2_Choice);
