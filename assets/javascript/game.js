@@ -120,7 +120,7 @@ database.ref().on("value", function(snapshot) {
 	console.log("Player 2 name from db: " + player_2_Name);
 	console.log("This window player: " +thisWindowPlayer);
 
-	
+
 
 	if(playerCount === 1) {
 
@@ -225,6 +225,10 @@ database.ref().on("value", function(snapshot) {
 			}
 		}
 	}
+
+}, function(errorObject) {
+
+      console.log("Errors handled: " + errorObject.code);
 
 });
 
