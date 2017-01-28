@@ -20,6 +20,42 @@ firebase.initializeApp(config);
 
 database = firebase.database();
 
+var lastOnlineRef;
+
+var connectedRef = database.ref('.info/connected');
+
+// When the client's connection state changes...
+connectedRef.on("value", function(snap) {
+
+  // If they are connected..
+  if (snap.val()) {
+
+    // Add user to the connections list.
+    if(thisWindowPlayer === player_1_Name) {
+    	var con = database.ref("/players/1");
+    	// Remove user from the connection list when they disconnect.
+    	con.onDisconnect().remove();
+    
+    }else if(thisWindowPlayer === player_2_Name) {
+    	var con = database.ref("/players/2");
+    	// Remove user from the connection list when they disconnect.
+    	con.onDisconnect().remove();
+    
+    }
+  }
+});
+// connectedRef.on('value', function(snapshot) {
+//   if (snapshot.val() === true) {
+
+//     // when user disconnects, remove their device
+//     con.onDisconnect().remove();
+
+//     // when user disconnects, update the last time they were seen online
+//     lastOnlineRef.onDisconnect().set(firebase.database.ServerValue.TIMESTAMP);
+//     $("#chatWindow").append("<p>" + thisWindowPlayer + " disconnected @ " + lastOnlineRef);
+//   }
+// });
+
 $(".choices").hide();
 
 // On click of Start Button
