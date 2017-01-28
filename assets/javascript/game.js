@@ -120,8 +120,6 @@ database.ref().on("value", function(snapshot) {
 	console.log("Player 2 name from db: " + player_2_Name);
 	console.log("This window player: " +thisWindowPlayer);
 
-
-
 	if(playerCount === 1) {
 
 		$("#gameStat1").hide();
@@ -235,8 +233,25 @@ database.ref().on("value", function(snapshot) {
 // Chat functionality
 $("#postComment").on("click", function(){
 	var comment = $("#comment").val();
-	database.ref("/chats").push(comment);
+	// Chat data to be pushed to db
+	chatData = {
+		userName: thisWindowPlayer,
+		comment: comment,
+		timeStamp: firebase.database.ServerValue.TIMESTAMP
+	}
+	// Pushing chat data. Chat history saved in database.
+	database.ref("/chats").push(chatData);
 	$("#comment").val("");
+});
+
+// Taking last 7 chats from db. 
+database.ref("/chats").orderByChild("timeStamp").limitToLast(7).on("child_added", function(childSnapshot) {
+	chatAuthor = childSnapshot.val().userName;
+	comment = childSnapshot.val().comment;
+	time = moment(childSnapshot.val().timeStamp,'x').format("MM/DD/YY hh:mm A");
+	console.log(time);
+	// Retrieving chatData to display in chat window
+	$("#chatWindow").append("<p>" + chatAuthor + " @ " + time + ": <br>" + comment + "</p>");
 })
 
 // RPS Game logic

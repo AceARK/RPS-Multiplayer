@@ -16,3 +16,11 @@ button {
 	border: 2px solid green;
 }
 
+#chatWindow {
+	overflow: scroll;
+	width: 600px;
+	height: 200px;
+}
+
+/* To-Do - Add individual classes to name@time and comment to distinguish each */
+
