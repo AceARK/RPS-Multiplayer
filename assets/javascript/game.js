@@ -24,35 +24,43 @@ var lastOnlineRef;
 
 var connectedRef = database.ref('.info/connected');
 
+database.ref("/player/1").onDisconnect().remove();
+
+database.ref("/player/2").onDisconnect().remove();
+
 // When the client's connection state changes...
-connectedRef.on("value", function(snap) {
-
-  // If they are connected..
-  if (snap.val()) {
-
-    // Add user to the connections list.
-    if(thisWindowPlayer === player_1_Name) {
-    	var con = database.ref("/players/1");
-    	// Remove user from the connection list when they disconnect.
-    	con.onDisconnect().remove();
+// connectedRef.on("value", function(snap) {
+// console.log(snap.val());
+//   // If they are connected..
+//   if (!snap.val()) {
+// console.log("player name : "+player_1_Name);
+// console.log("player name : "+player_2_Name);
+  	// console.log("player1 "+player_1_Name);
+  	// console.log("player2 "+player_2_Name);
+   //  // Add user to the connections list.
+   //  if(thisWindowPlayer === player_1_Name) {
+   //  	var conplayer1 = database.ref("/players/1");
+   //  	// Remove user from the connection list when they disconnect.
+   //  	conplayer1.remove();
     
-    }else if(thisWindowPlayer === player_2_Name) {
-    	var con = database.ref("/players/2");
-    	// Remove user from the connection list when they disconnect.
-    	con.onDisconnect().remove();
+   //  }else if(thisWindowPlayer === player_2_Name) {
+   //  	var conplayer2 = database.ref("/players/2");
+   //  	// Remove user from the connection list when they disconnect.
+   //  	conplayer2.remove();
     
-    }
-  }
-});
+   //  }
+    // when user disconnects, update the last time they were seen online
+    //lastOnlineRef.onDisconnect().set(firebase.database.ServerValue.TIMESTAMP);
+//     //$("#chatWindow").append("<p>" + thisWindowPlayer + " disconnected @ " + lastOnlineRef);
+//   }
+// });
 // connectedRef.on('value', function(snapshot) {
 //   if (snapshot.val() === true) {
 
 //     // when user disconnects, remove their device
 //     con.onDisconnect().remove();
 
-//     // when user disconnects, update the last time they were seen online
-//     lastOnlineRef.onDisconnect().set(firebase.database.ServerValue.TIMESTAMP);
-//     $("#chatWindow").append("<p>" + thisWindowPlayer + " disconnected @ " + lastOnlineRef);
+  
 //   }
 // });
 
@@ -94,8 +102,8 @@ $("#startButton").on("click", function() {
 
 	// Increment player count
 	++playerCount;
-	console.log("Incremented Player Count: " + playerCount);
-	console.log("PlayerCount to push: " + playerCount);
+	//console.log("Incremented Player Count: " + playerCount);
+	//console.log("PlayerCount to push: " + playerCount);
 	playerCountToPush = playerCount.toString();
 
 	// Getting name of player using the current window
@@ -140,21 +148,21 @@ To Do After -
 // Display/Set variables on change in database
 database.ref().on("value", function(snapshot) {
 
-	console.log("Player 1 wins: " + player_1_Wins + " Player 2 wins " + player_2_Wins);
+	//console.log("Player 1 wins: " + player_1_Wins + " Player 2 wins " + player_2_Wins);
 
 	turns = snapshot.child("turns").val();
-	console.log("turns: " + turns);
+	//console.log("turns: " + turns);
 	playerCount = snapshot.child("players").numChildren();
-	console.log("Player Count from DB: " + playerCount);
+	//console.log("Player Count from DB: " + playerCount);
 	player_1_Choice = snapshot.child("players").child("1").child("choice").val();
-	console.log("Player 1 choice from db: " + player_1_Choice);
+	//console.log("Player 1 choice from db: " + player_1_Choice);
 	player_2_Choice = snapshot.child("players").child("2").child("choice").val();
-	console.log("Player 2 choice from db: " + player_2_Choice);
+	//console.log("Player 2 choice from db: " + player_2_Choice);
 	player_1_Name = snapshot.child("players").child("1").child("name").val();
 	player_2_Name = snapshot.child("players").child("2").child("name").val();
-	console.log("Player 1 name from db: " + player_1_Name);
-	console.log("Player 2 name from db: " + player_2_Name);
-	console.log("This window player: " +thisWindowPlayer);
+	//console.log("Player 1 name from db: " + player_1_Name);
+	//console.log("Player 2 name from db: " + player_2_Name);
+	//console.log("This window player: " +thisWindowPlayer);
 
 	if(playerCount === 1) {
 
@@ -262,7 +270,7 @@ database.ref().on("value", function(snapshot) {
 
 }, function(errorObject) {
 
-      console.log("Errors handled: " + errorObject.code);
+      //console.log("Errors handled: " + errorObject.code);
 
 });
 
@@ -285,7 +293,7 @@ database.ref("/chats").orderByChild("timeStamp").limitToLast(7).on("child_added"
 	chatAuthor = childSnapshot.val().userName;
 	comment = childSnapshot.val().comment;
 	time = moment(childSnapshot.val().timeStamp,'x').format("MM/DD/YY hh:mm A");
-	console.log(time);
+	//console.log(time);
 	// Retrieving chatData to display in chat window
 	$("#chatWindow").append("<p>" + chatAuthor + " @ " + time + ": <br>" + comment + "</p>");
 })
@@ -300,12 +308,12 @@ function rpsGameValidate(player_1_Choice, player_2_Choice) {
 			   ((player_1_Choice === 'paper') && (player_2_Choice === 'rock')) ||
 			   ((player_1_Choice === 'scissors') && (player_2_Choice === 'paper'))) {
 		winner = player_1_Name;
-		console.log("player_1_Wins " + player_1_Wins + " player 2 loss: " + player_2_Losses);
+		//console.log("player_1_Wins " + player_1_Wins + " player 2 loss: " + player_2_Losses);
 		$("#message").html(player_1_Name + " Wins!");
 
 	}else {
 		winner = player_2_Name;
-		console.log("player_2_Score " + player_2_Wins + " player 1 loss: " + player_1_Losses);
+		//console.log("player_2_Score " + player_2_Wins + " player 1 loss: " + player_1_Losses);
 		$("#message").html(player_2_Name + " Wins!");
 	}
 
