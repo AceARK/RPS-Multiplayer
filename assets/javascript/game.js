@@ -96,6 +96,10 @@ database.ref().on("value", function(snapshot) {
 		$("#player_2_Name").html(player_2_Name);
 		$("#gameStat2").hide();
 	}
+	// If less than 2 players exist, remove turns
+	if(playerCount < 2) {
+		database.ref("/turns").remove();
+	}
 
 	// Messages to be displayed on both windows are done in onValue() function
 	// Display name of player 1 in leftSidePanel
@@ -141,7 +145,6 @@ database.ref().on("value", function(snapshot) {
 
 				$("#gameMessage").html("<p>Waiting for " + player_2_Name + " to choose.</p>");
 
-
 			}
 
 		}
@@ -159,15 +162,19 @@ $(".choices").on("click", function() {
 		player_1_Choice = $(this).data('choice');
 		// Hide choices
 		$(".leftSidePanel> .choices").hide();
+		// Add class to display choice
+		$(this).addClass("chosen");
 		// Adding choice to database
 		database.ref("/players/1/choice").set(player_1_Choice);
 		turns = 1;
 
-	}else {
+	}else if($(this).parent().hasClass('rightSidePanel')) {
 		// Getting player 2's choice
 		player_2_Choice = $(this).data('choice');
 		// Hide choices
 		$(".rightSidePanel> .choices").hide();
+		// Add css class to display choice
+		$(this).addClass("chosen");
 		// Adding player 2 choice to the database
 		database.ref("/players/2/choice").set(player_2_Choice);
 		turns = 2;
