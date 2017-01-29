@@ -21,36 +21,32 @@
 		<h1>RPS - Multiplayer</h1>
 		<!-- User login and Start button row -->
 		<div class="row">
-			<div class="col-sm-12">
+			<div class="col-xs-12">
 				<div class="row">
-					<div class="col-sm-12 text-center">
+					<div class="col-xs-12 text-center">
 						<div id="playerMessage"></div>
 						<div id="gameMessage"></div>
 					</div>
 				</div>
 				<div class="row text-center">
-					<div class="col-sm-12">
-						<p class="displayBeforeStart">
-							<span class="displayBeforeStart">Enter your name: 
-								<input type="text" id="userName" class="form-control text-center" placeholder="Name">
-								<input type="hidden" id="userNameHidden">
-							</span>
-						</p>
-					</div>
-				</div>
-				<div class="row text-center">
-					<div class="col-sm-12">
-						<button class="displayBeforeStart btn btn-success" id="startButton">Start</button>
+					<div class="col-xs-12">
+						<form class="displayBeforeStart">
+							<div class="form-group">
+							   	<label for="exampleInputEmail1">Enter your name: </label>
+							    <input type="text" class="form-control" id="userName" placeholder="Enter your name">
+							</div>
+							<button type="submit" class="btn btn-success" id="startButton">Submit</button>
+						</form>
 					</div>
 				</div>
 			</div>
 		</div>
 		<!-- Game row -->
 		<div class="row">
-			<div class="col-sm-12">
+			<div class="col-xs-12">
 				<div class="row text-center">
 					<!-- Left side player panel -->
-					<div class="col-sm-4 leftSidePanel">
+					<div class="col-xs-4 leftSidePanel">
 						<p id="gameStat1">Waiting for Player 1</p>										
 						<!-- Player name div -->
 						<div id="player_1_Name"></div>
@@ -60,11 +56,11 @@
 						<button class="choices" data-choice="scissors">Scissors</button>
 					</div>
 					<!-- Middle message panel -->
-					<div class="col-sm-4 messages">
+					<div class="col-xs-4 messages">
 						<div id="message"></div>
 					</div>
 					<!-- Right side player panel -->
-					<div class="col-sm-4 rightSidePanel">
+					<div class="col-xs-4 rightSidePanel">
 						<p id="gameStat2">Waiting for Player 2</p>
 						<!-- Player name div -->
 						<div id="player_2_Name"></div>
@@ -78,14 +74,16 @@
 		</div>
 		<!-- Chat Section -->
 		<div class="row">
-			<div class="col-sm-12">
+			<div class="col-xs-12">
 				<div id="chatWindow"></div>
 				<div class="row">
-					<div class="col-sm-10">
-						<input type="text" id="comment" class="form-control">
-					</div>
-					<div class="col-sm-2">
-						<button class="btn btn-info" id="postComment">Post</button>
+					<div class="col-xs-12">
+						<form>
+							<div class="form-group">
+							    <input type="text" class="form-control" id="comment" placeholder="Enter your name">
+							</div>
+							<button type="submit" class="btn btn-success" id="postComment">Post</button>
+						</form>	
 					</div>
 				</div>
 			</div>
