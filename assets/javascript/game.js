@@ -1,4 +1,10 @@
 var playerCount = 0;
+var player_1_Wins = 0; 
+var player_2_Wins = 0; 
+var player_1_Losses = 0; 
+var player_2_Losses = 0; 
+var player_1_Choice, player_2_Choice = "";
+var player_1_Name, player_2_Name = "";
 var thisWindowPlayer = "Guest";
 var turns = 0;
 // Firebase configuration
@@ -101,9 +107,12 @@ database.ref().on("value", function(snapshot) {
 		database.ref("/turns").remove();
 	}
 
-	// Messages to be displayed on both windows are done in onValue() function
-	// Display name of player 1 in leftSidePanel
-	// If thisWindowPlayer is player 1, display playerMessage "Hi name. You are player 1."
+	/*
+	* Messages to be displayed on both windows are done in onValue() function
+	* Personalized messages displayed here. eg.,
+	* Display name of player 1 in leftSidePanel
+	* If thisWindowPlayer is player 1, display playerMessage "Hi name. You are player 1."
+	*/
 	if(playerCount === 1) {
 		// $("#gameMessage").hide();
 		if(thisWindowPlayer === player_1_Name) {
@@ -123,12 +132,14 @@ database.ref().on("value", function(snapshot) {
 
 				$("#gameMessage").html("<p>It's your turn.</p>");
 
-				$(".rightSidePanel> .choices").show();
+				$(".rightSidePanel> .choices").removeClass("chosen").attr('disabled', false).show();
 
 			}
-		// For anybody logging in after 2 players exist, disable input form, and display message
-		// P.N. - Player count max val = 2 since this game only handles 2 players
-		// P.N. - Future version will include multiple players being paired to play and handling odd number of players
+		/*	
+		* For anybody logging in after 2 players exist, disable input form, and display message
+		* P.N. - Player count max val = 2 since this game only handles 2 players
+		* P.N. - Future version will include multiple players being paired to play and handling odd number of players
+		*/
 		}else if(thisWindowPlayer === "Guest") {
 			$(".displayBeforeStart").hide();
 			$("#gameMessage").html("A game is in progress. You may wait until they're done playing or come back later.");
@@ -149,6 +160,55 @@ database.ref().on("value", function(snapshot) {
 
 		}
 
+		/*
+		* Code that runs irrespective of user window
+		*/
+		if(turns === 0) {
+
+			$(".leftSidePanel").addClass('currentPlayer');
+			$(".rightSidePanel").removeClass('currentPlayer');
+
+		}else if(turns === 1) {
+
+			$(".leftSidePanel").removeClass('currentPlayer');
+			$(".rightSidePanel").addClass('currentPlayer');
+
+		// If both players have chosen, 	
+		}else if(turns === 2) {
+			// Remove current player style
+			$(".leftSidePanel").removeClass('currentPlayer');
+			$(".rightSidePanel").removeClass('currentPlayer');
+			// Update turns and set in db
+			turns = 0;
+			database.ref("/turns").set(turns);
+			// Validate choices and rps game
+			rpsGameValidate(player_1_Choice,player_2_Choice);
+			// Resetting player 1 and 2 choices
+			$(".choices").removeClass("chosen").attr("disabled", false);
+			// Removing choices from db for new game
+			database.ref("/players/1/choice").remove();
+			database.ref("/players/2/choice").remove();
+			// Run RPS game logic
+			if(winner === player_1_Name) {
+
+				++player_1_Wins;
+				++player_2_Losses;
+				database.ref("/players/1/wins").set(player_1_Wins);
+				database.ref("/players/2/losses").set(player_2_Losses);
+
+			}else if(winner === player_2_Name) {
+
+				++player_2_Wins;
+				++player_1_Losses;
+				database.ref("/players/1/losses").set(player_1_Losses);
+				database.ref("/players/2/wins").set(player_2_Wins);
+			}
+			if(winner !== "") {
+				// Display who won
+				$("#message").html(winner + " Wins!");
+			}
+		}
+
 	}
 
 });
@@ -160,26 +220,77 @@ $(".choices").on("click", function() {
 	if($(this).parent().hasClass('leftSidePanel')) {
 		// Getting choice chosen by player 1
 		player_1_Choice = $(this).data('choice');
-		// Hide choices
-		$(".leftSidePanel> .choices").hide();
-		// Add class to display choice
-		$(this).addClass("chosen");
 		// Adding choice to database
 		database.ref("/players/1/choice").set(player_1_Choice);
+		// Update turns and set in database
 		turns = 1;
+		database.ref("/turns").set(turns);
+		// Hide choices
+		$(".leftSidePanel> .choices").hide();
 
 	}else if($(this).parent().hasClass('rightSidePanel')) {
 		// Getting player 2's choice
 		player_2_Choice = $(this).data('choice');
-		// Hide choices
-		$(".rightSidePanel> .choices").hide();
-		// Add css class to display choice
-		$(this).addClass("chosen");
 		// Adding player 2 choice to the database
 		database.ref("/players/2/choice").set(player_2_Choice);
+		// Update turns and set in database
 		turns = 2;
+		database.ref("/turns").set(turns);
+		// Hide choices
+		$(".rightSidePanel> .choices").hide();
 	}
 
-	database.ref("/turns").set(turns);
+	// Show only the chosen one
+	$(this).show();
+	// Add class to display choice
+	$(this).addClass("chosen").attr('disabled', true);
 
+});
+
+// RPS Game logic
+function rpsGameValidate(player_1_Choice, player_2_Choice) {
+	if (player_1_Choice === player_2_Choice) {
+		winner = "";
+		$("#message").html("Tie");
+
+	}else if (((player_1_Choice === 'rock') && (player_2_Choice === 'scissors')) ||
+			   ((player_1_Choice === 'paper') && (player_2_Choice === 'rock')) ||
+			   ((player_1_Choice === 'scissors') && (player_2_Choice === 'paper'))) {
+		winner = player_1_Name;
+		
+	}else {
+		winner = player_2_Name;
+	}
+
+	setTimeout(clearMessage,3000);
+
+}
+
+function clearMessage() {
+	$("#message").html("");
+}
+
+// Chat functionality
+$("#postComment").on("click", function(event){
+	event.preventDefault();
+	var comment = $("#comment").val();
+	// Chat data to be pushed to db
+	chatData = {
+		userName: thisWindowPlayer,
+		comment: comment,
+		timeStamp: firebase.database.ServerValue.TIMESTAMP
+	}
+	// Pushing chat data. Chat history saved in database.
+	database.ref("/chats").push(chatData);
+	$("#comment").val("");
+});
+
+// Taking last 7 chats from db. 
+database.ref("/chats").orderByChild("timeStamp").limitToLast(7).on("child_added", function(childSnapshot) {
+	chatAuthor = childSnapshot.val().userName;
+	comment = childSnapshot.val().comment;
+	time = moment(childSnapshot.val().timeStamp,'x').format("MM/DD/YY hh:mm A");
+	// Retrieving chatData to display in chat window
+	$("#chatWindow").append("<p><span class='chatUserInfo'>" + chatAuthor + " @ " + time + ": </span><br>" + comment + "</p>");
 })
+

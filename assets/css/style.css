@@ -24,3 +24,17 @@ button {
 
 /* To-Do - Add individual classes to name@time and comment to distinguish each */
 
+.hidden {
+	display: none;
+}
+
+.chosen {
+	height: 60px;
+	width: 80px;
+	display: inline-block;
+}
+
+.chatUserInfo {
+	font-size: 15px;
+	background-color: rgba(40,255,222,0.4);
+}
