@@ -20,50 +20,6 @@ firebase.initializeApp(config);
 
 database = firebase.database();
 
-var lastOnlineRef;
-
-var connectedRef = database.ref('.info/connected');
-
-database.ref("/player/1").onDisconnect().remove();
-
-database.ref("/player/2").onDisconnect().remove();
-
-// When the client's connection state changes...
-// connectedRef.on("value", function(snap) {
-// console.log(snap.val());
-//   // If they are connected..
-//   if (!snap.val()) {
-// console.log("player name : "+player_1_Name);
-// console.log("player name : "+player_2_Name);
-  	// console.log("player1 "+player_1_Name);
-  	// console.log("player2 "+player_2_Name);
-   //  // Add user to the connections list.
-   //  if(thisWindowPlayer === player_1_Name) {
-   //  	var conplayer1 = database.ref("/players/1");
-   //  	// Remove user from the connection list when they disconnect.
-   //  	conplayer1.remove();
-    
-   //  }else if(thisWindowPlayer === player_2_Name) {
-   //  	var conplayer2 = database.ref("/players/2");
-   //  	// Remove user from the connection list when they disconnect.
-   //  	conplayer2.remove();
-    
-   //  }
-    // when user disconnects, update the last time they were seen online
-    //lastOnlineRef.onDisconnect().set(firebase.database.ServerValue.TIMESTAMP);
-//     //$("#chatWindow").append("<p>" + thisWindowPlayer + " disconnected @ " + lastOnlineRef);
-//   }
-// });
-// connectedRef.on('value', function(snapshot) {
-//   if (snapshot.val() === true) {
-
-//     // when user disconnects, remove their device
-//     con.onDisconnect().remove();
-
-  
-//   }
-// });
-
 $(".choices").hide();
 
 // On click of Start Button
@@ -83,6 +39,18 @@ $("#startButton").on("click", function() {
 			
 		}
 
+		// Storing player 1 name as current window player
+		thisWindowPlayer = player_1_Name;
+
+		// Storing player 1 db reference in variable
+		player1Ref = database.ref("players/1");
+
+		// Creating new player in database and passing player data to it
+		database.ref("players/1").set(playerData);
+
+		// Listening to disconnection of player 1 and removing from db
+		player1Ref.onDisconnect().remove();
+
 	}else {
 		// Take player as player2
 		player_2_Name = $("#userName").val();
@@ -95,6 +63,19 @@ $("#startButton").on("click", function() {
 			losses: 0
 			
 		}
+
+		// Storing player 1 name as current window player
+		thisWindowPlayer = player_2_Name;
+
+		// Storing player 2 db reference in variable
+		player2Ref = database.ref("/players/2");
+
+		// Creating new player in database and passing player data to it
+		player2Ref.set(playerData);
+
+		// Listening to disconnection of player 2 and removing from db
+		player2Ref.onDisconnect().remove();
+
 		// Setting and adding turns to database
 		turns = 0;
 		database.ref("/turns").set(turns);
@@ -102,16 +83,7 @@ $("#startButton").on("click", function() {
 
 	// Increment player count
 	++playerCount;
-	//console.log("Incremented Player Count: " + playerCount);
-	//console.log("PlayerCount to push: " + playerCount);
-	playerCountToPush = playerCount.toString();
 
-	// Getting name of player using the current window
-	thisWindowPlayer = playerData.name;
-
-	// Creating new player in database and passing player data to it
-	database.ref("players/" + playerCountToPush).set(playerData);
-	
 	// Hiding start components and enabling game choices
 	$(".displayBeforeStart").hide();
 	$(".choices").attr('disabled', false);
