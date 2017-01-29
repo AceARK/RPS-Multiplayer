@@ -106,13 +106,39 @@ database.ref().on("value", function(snapshot) {
 
 			$("#playerMessage").html("Hi " + player_2_Name + ". You are Player 2.");
 
-		}
+			if(turns === 0) {
+
+				$("#gameMessage").html("<p>Waiting for " + player_1_Name + " to choose.</p>");
+
+			}else if(turns === 1) {
+
+				$("#gameMessage").html("<p>It's your turn.</p>");
+
+				$(".rightSidePanel> .choices").show();
+
+			}
 		// For anybody logging in after 2 players exist, disable input form, and display message
 		// P.N. - Player count max val = 2 since this game only handles 2 players
 		// P.N. - Future version will include multiple players being paired to play and handling odd number of players
-		if(thisWindowPlayer === "Guest") {
+		}else if(thisWindowPlayer === "Guest") {
 			$(".displayBeforeStart").hide();
-			$("#gameMessage").html("A game is in progress. You may wait until they finish playing or come back later.");
+			$("#gameMessage").html("A game is in progress. You may wait until they're done playing or come back later.");
+		}
+
+		if(player_1_Name === thisWindowPlayer) {
+
+			if(turns === 0) {
+
+				$("#gameMessage").html("<p>It's your turn.</p>");
+
+				$(".leftSidePanel> .choices").show();
+
+			}else if(turns === 1) {
+
+				$("#gameMessage").html("<p>Waiting for " + player_2_Name + " to choose.</p>");
+
+			}
+
 		}
 
 	}
