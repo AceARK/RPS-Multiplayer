@@ -112,7 +112,7 @@ database.ref().on("value", function(snapshot) {
 		// P.N. - Future version will include multiple players being paired to play and handling odd number of players
 		if(thisWindowPlayer === "Guest") {
 			$(".displayBeforeStart").hide();
-			$("#gameMessage").html("Two players are already playing. You may wait until they finish playing or come back later.");
+			$("#gameMessage").html("A game is in progress. You may wait until they finish playing or come back later.");
 		}
 
 	}
