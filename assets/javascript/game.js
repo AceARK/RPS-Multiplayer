@@ -81,8 +81,6 @@ $("#startButton").on("click", function(event) {
 		player2Ref.set(playerData);
 		// Listening to disconnection of player 2 and removing from db
 		player2Ref.onDisconnect().remove();
-		// Setting disconnectedPlayerName as this player name for future use
-		disconnectedPlayer_2_name = thisWindowPlayer;
 
 	}else if(playerCount === 1 && !gameState.playerOneJoined) {
 		// If number of players = 1, take name as player 2 
@@ -183,7 +181,9 @@ database.ref("/").on("value", function(snapshot) {
 			$("#player_2_Name").empty();
 			$("#gameMessage").empty();
 			$(".choices").hide();
-		}	
+		}
+		// Setting disconnectedPlayerName as this player name for future use
+		disconnectedPlayer_1_name = thisWindowPlayer;	
 	}else {
 		$("#playerMessage").empty();
 	}
@@ -195,6 +195,8 @@ database.ref("/").on("value", function(snapshot) {
 		//Display Player 2 details on all windows
 		$("#player_2_Name").html(player_2_Name);
 		$("#gameStat2").hide();
+		// Setting disconnectedPlayerName as this player name for future use
+		disconnectedPlayer_2_name = thisWindowPlayer;
 
 		//Special condition where Player 1 disconnects and we have a player 2
 		if(!gameState.playerOneJoined) {
