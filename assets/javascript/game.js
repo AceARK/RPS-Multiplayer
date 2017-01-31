@@ -259,8 +259,8 @@ database.ref("/").on("value", function(snapshot) {
 					if(thisWindowPlayer === player_2_Name) {
 						$("#gameMessage").html("<p>Waiting for " + player_1_Name + " to choose.</p>");
 					}
-					$(".leftSidePanel").addClass('currentPlayer');
-					$(".rightSidePanel").removeClass('currentPlayer');
+					$(".leftBorder").addClass('currentPlayer');
+					$(".rightBorder").removeClass('currentPlayer');
 				}
 			}
 
@@ -281,8 +281,8 @@ database.ref("/").on("value", function(snapshot) {
 				if(thisWindowPlayer === player_1_Name) {
 					$("#gameMessage").html("<p>Waiting for " + player_2_Name + " to choose.</p>");
 				}
-				$(".leftSidePanel").removeClass('currentPlayer');
-				$(".rightSidePanel").addClass('currentPlayer');
+				$(".leftBorder").removeClass('currentPlayer');
+				$(".rightBorder").addClass('currentPlayer');
 			}
 
 			if(gameState.playerTwoMadeChoice && turns === 1) {

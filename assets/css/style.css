@@ -33,6 +33,22 @@ body {
 	font-size: 25px;
 }
 
+.leftBorder, .rightBorder {
+	margin: 10px;
+	border-radius: 10px;
+	border: 2px solid white;
+}
+
+.leftSidePanel, .rightSidePanel {
+	padding: 30px;
+}
+
+.currentPlayer {                 /*Add current player to .leftBorder and .rightBorder, no leftSidePanel rightSidePenel */
+	background: url("../images/leftRightbg.jpg") no-repeat;
+	background-size: 100% 100%;
+}
+
+
 #player_1_Name, #player_2_Name {
 	font-size: 28px;
 	margin-top: -5px;
@@ -76,14 +92,7 @@ img {
 	height: 80px;
 	width: 80px;
 	margin: 15px;
-}
-
-.leftSidePanel, .rightSidePanel {
-	padding: 50px;
-}
-
-.currentPlayer {
-	border: 5px solid grey;
+	cursor: pointer;
 }
 
 .hidden {
