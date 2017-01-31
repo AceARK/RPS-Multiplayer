@@ -5,6 +5,9 @@ body {
     -o-background-size: cover;
     background-size: 100% 100%;
     font-size: 20px;
+    /*font-family: 'Roboto Slab', serif;*/
+	/*font-family: 'Itim', cursive;*/
+	font-family: 'Sriracha', cursive;
 }
 
 #userName {
@@ -36,16 +39,16 @@ body {
 .leftBorder, .rightBorder {
 	margin: 10px;
 	border-radius: 10px;
-	border: 2px solid white;
+	border: 2px solid gray;
 }
 
 .leftSidePanel, .rightSidePanel {
 	padding: 30px;
+	margin: 7px;
 }
 
 .currentPlayer {                 /*Add current player to .leftBorder and .rightBorder, no leftSidePanel rightSidePenel */
-	background: url("../images/leftRightbg.jpg") no-repeat;
-	background-size: 100% 100%;
+	background-color: #153a99;
 }
 
 
@@ -54,26 +57,45 @@ body {
 	margin-top: -5px;
 }
 
+#gameStat1, #gameStat2 {
+	font-family: 'Itim', cursive;
+}
+
 .messages {
+	margin-top: 25px;
 	padding: 30px;
 	font-size: 40px;
+	font-family: 'Itim', cursive;
 }
 
 #gameMessage {
-	font-size: 25px;
-	margin-bottom: 30px;
+
+	font-size: 28px;
+	background: url("../images/whitebg.jpg");
+	min-height: 60px;
+	border: 2px solid grey;
+	border-radius: 10px;
+	margin-right: 30px;
+	margin-left: 30px;
+	padding: 5px;
+	font-family: 'Itim', cursive;
 }
 
 #chatWindow {
-	height: 100px;
+	height: 200px;
 	border: 1px solid black;
 	margin: 10px;
-	overflow: scroll;
-	font-size: 15px;
+	overflow: auto;
+	background-color: white;
+	font-size: 20px;
+	padding: 15px;
+	font-family: 'Itim', cursive;
+	/*font-family: 'Sriracha', cursive;*/
 }
 
 label {
 	margin: 0px;
+	font-size: 24px;
 }
 
 #username, #startButton {
@@ -89,9 +111,12 @@ button {
 }
 
 img {
-	height: 80px;
-	width: 80px;
-	margin: 15px;
+	border: 2px solid gray;
+	border-radius: 10px;
+	background-color: #f7f7f7;
+	height: 100px;
+	width: 100px;
+	margin: 8px;
 	cursor: pointer;
 }
 
@@ -100,16 +125,42 @@ img {
 }
 
 .chosen {
-	height: 120px;
-	width: 120px;
+	height: 130px;
+	width: 130px;
 	display: inline-block;
 	margin: 0px;
 }
 
 .chatUserInfo {
 	background-color: rgba(40,255,222,0.4);
+	font-family: 'Sriracha', cursive;
+	font-size: 17px;
 }
+
 
 .form-inline .form-control {
 		width: 80%;
 }
+
+#comment {
+	height: 40px;
+	font-size: 20px;
+	margin-left: -40px;
+	/*padding-left: -12px;*/
+	/*padding-right: -12px;*/
+}
+
+#postComment {
+	display: inline;
+}
+
+.playerMessage {
+	font-size: 28px;
+	min-height: 50px;
+	margin-bottom: 30px;
+}
+
+/*.winsLossesCounter {
+
+}
+*/

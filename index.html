@@ -14,6 +14,8 @@
 	<script src="https://www.gstatic.com/firebasejs/3.6.7/firebase.js"></script>
 	<!-- Moment.js cdn -->
 	<script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
+	<!-- Google Fonts link -->
+	<link href="https://fonts.googleapis.com/css?family=Itim|Roboto+Slab|Sriracha" rel="stylesheet">
 </head>
 <body> 
 	<div class="container-fluid">
@@ -24,7 +26,9 @@
 	 		<div class="col-xs-12">
 				<div class="row">
 					<div class="col-xs-12 text-center">
-						<div id="playerMessage"></div>
+						<div class="playerMessage">
+							<span id="playerMessage"></span>
+						</div>
 					</div>
 				</div>
 				<div class="row text-center">
@@ -51,7 +55,10 @@
 							<p id="gameStat1">Waiting for Player 1</p>
 						</div>
 					</div>
-					<div class="col-xs-4 col-xs-offset-4">
+					<div class="col-xs-4">
+						<div id="gameMessage"></div>
+					</div>
+					<div class="col-xs-4">
 						<div id="right">
 							<!-- Player name div -->
 							<div id="player_2_Name"></div>
@@ -70,16 +77,16 @@
 						<div class="leftBorder">
 							<div class="leftSidePanel">										
 								<!-- RPS choices div -->
-								<img class="choices" src="assets/images/rockLeftButton.jpg" data-choice="rock">
-								<img class="choices" src="assets/images/paperLeftButton.jpg" data-choice="paper">
-								<img class="choices" src="assets/images/scissorLeftButton.jpg" data-choice="scissors">
+								<img class="choices" src="assets/images/cartoonRockTransp.png" data-choice="rock">
+								<img class="choices" src="assets/images/cartoonPaper.png" data-choice="paper">
+								<img class="choices" src="assets/images/cartoonScissorTransp.png" data-choice="scissors">
+								<div class="winsLossesCounter"></div>
 							</div>
 						</div>
 					</div>
 					<!-- Middle message panel -->
 					<div class="col-xs-4">
 						<div class="messages">
-							<div id="gameMessage"></div>
 							<div id="message"></div>
 						</div>
 					</div>
@@ -88,9 +95,10 @@
 						<div class="rightBorder">
 							<div class="rightSidePanel">
 								<!-- RPS choices div -->
-								<img class="choices" src="assets/images/rockRightButton.jpg" data-choice="rock">
-								<img class="choices" src="assets/images/paperRightButton.jpg" data-choice="paper">
-								<img class="choices" src="assets/images/scissorRightButton.jpg" data-choice="scissors">
+								<img class="choices" src="assets/images/cartoonRockTransp.png" data-choice="rock">
+								<img class="choices" src="assets/images/cartoonPaper.png" data-choice="paper">
+								<img class="choices" src="assets/images/cartoonScissorTransp.png" data-choice="scissors">
+								<div class="winsLossesCounter"></div>
 							</div>
 						</div>
 					</div>
@@ -99,14 +107,14 @@
 		</div>
 		<!-- Chat Section -->
 		<div class="row">
-			<div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+			<div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-6 col-md-offset-3">
 				<div id="chatWindow">
 			</div>
 			<div class="row">
 				<div class="col-xs-12 col-sm-10 col-sm-offset-1">
 					<form id="chat-form">
 						<div class="chat-form form-group form-inline">
-						    <input type="text" class="form-control" id="comment" placeholder="Comment">
+						    <input type="text" class="form-control" id="comment" placeholder="Post a Comment">
 						    <button type="submit" class="btn btn-lg btn-success" id="postComment"><i class="fa fa-paper-plane-o" aria-hidden="true"></i> Post</button>
 						</div>
 					</form>	
