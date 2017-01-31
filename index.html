@@ -15,8 +15,8 @@
 	<!-- Moment.js cdn -->
 	<script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
 </head>
-<body>
-	<div class="container">
+<body> 
+	<div class="container-fluid">
 		<!-- Heading -->
 		<h1>RPS - Multiplayer</h1>
 		<!-- User login and Start button row -->
@@ -25,54 +25,69 @@
 				<div class="row">
 					<div class="col-xs-12 text-center">
 						<div id="playerMessage"></div>
-						<div id="gameMessage"></div>
 					</div>
 				</div>
 				<div class="row text-center">
 					<div class="col-xs-12">
 						<form class="displayBeforeStart">
 							<div class="form-group form-inline">
-							   	<label for="exampleInputEmail1">Enter name to start playing </label>
+							   	<label for="exampleInputEmail1">Enter name to start playing   <i class="fa fa-arrow-right" aria-hidden="true"></i></label>
 							    <input type="text" class="form-control" id="userName" placeholder="Your name">
-							    <button type="submit" class="form-inline btn btn-success" id="startButton">Submit</button>
+							    <button type="submit" class="form-inline btn btn-lg btn-success" id="startButton"><i class="fa fa-play" aria-hidden="true"></i> Play</button>
 							</div>
 						</form>
 					</div>
 				</div>
 			</div>
 		</div>
-		<!-- Game row -->
+		<!-- Name display row -->
 		<div class="row">
-			<div class="col-sm-12">
+			<div class="col-xs-12">
 				<div class="row text-center">
-					<!-- Left side player panel -->
-					<div class="col-sm-5">
-						<div class="leftSidePanel">
-							<p id="gameStat1">Waiting for Player 1</p>										
+					<div class="col-xs-4">
+						<div id="left">
 							<!-- Player name div -->
 							<div id="player_1_Name"></div>
+							<p id="gameStat1">Waiting for Player 1</p>
+						</div>
+					</div>
+					<div class="col-xs-4 col-xs-offset-4">
+						<div id="right">
+							<!-- Player name div -->
+							<div id="player_2_Name"></div>
+							<p id="gameStat1">Waiting for Player 2</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Game row -->
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="row text-center">
+					<!-- Left side player panel -->
+					<div class="col-xs-4">
+						<div class="leftSidePanel">										
 							<!-- RPS choices div -->
-							<button class="choices rock" data-choice="rock">Rock</button>
-							<button class="choices paper" data-choice="paper">Paper</button>
-							<button class="choices scissors" data-choice="scissors">Scissors</button>
+							<img class="choices" src="assets/images/rockLeftButton.jpg" data-choice="rock">
+							<img class="choices" src="assets/images/paperLeftButton.jpg" data-choice="paper">
+							<img class="choices" src="assets/images/scissorLeftButton.jpg" data-choice="scissors">
 						</div>
 					</div>
 					<!-- Middle message panel -->
-					<div class="col-sm-2">
+					<div class="col-xs-4">
 						<div class="messages">
+							<div id="gameMessage"></div>
 							<div id="message"></div>
 						</div>
 					</div>
 					<!-- Right side player panel -->
-					<div class="col-sm-5">
+					<div class="col-xs-4">
 						<div class="rightSidePanel">
-							<p id="gameStat2">Waiting for Player 2</p>
-							<!-- Player name div -->
-							<div id="player_2_Name"></div>
 							<!-- RPS choices div -->
-							<button class="choices rock" data-choice="rock">Rock</button>
-							<button class="choices paper" data-choice="paper">Paper</button>
-							<button class="choices scissors" data-choice="scissors">Scissors</button>
+							<img class="choices" src="assets/images/rockRightButton.jpg" data-choice="rock">
+							<img class="choices" src="assets/images/paperRightButton.jpg" data-choice="paper">
+							<img class="choices" src="assets/images/scissorRightButton.jpg" data-choice="scissors">
 						</div>
 					</div>
 				</div>
@@ -80,15 +95,15 @@
 		</div>
 		<!-- Chat Section -->
 		<div class="row">
-			<div class="col-xs-12">
+			<div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
 				<div id="chatWindow">
 			</div>
 			<div class="row">
-				<div class="col-xs-12">
+				<div class="col-xs-12 col-sm-10 col-sm-offset-1">
 					<form id="chat-form">
-						<div class="chat-form form-group form-inline col-xs-8 col-xs-offset-2">
+						<div class="chat-form form-group form-inline">
 						    <input type="text" class="form-control" id="comment" placeholder="Comment">
-						    <button type="submit" class="btn btn-success" id="postComment">Post</button>
+						    <button type="submit" class="btn btn-lg btn-success" id="postComment"><i class="fa fa-paper-plane-o" aria-hidden="true"></i> Post</button>
 						</div>
 					</form>	
 				</div>
