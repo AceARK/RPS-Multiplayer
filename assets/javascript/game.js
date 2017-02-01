@@ -38,6 +38,9 @@ $(".choices").hide();
 // On click of Start Button
 $("#startButton").on("click", function(event) {
 	event.preventDefault();
+	if($("#userName").val() === "") {
+		return;
+	}
 	// If no players exist in database i.e. this is the first client to click on start button
 	if(playerCount === 0) {
 		// If number of players = 0, take name as player 1
@@ -272,8 +275,8 @@ database.ref("/game").on("value", function(snapshot) {
 					if(thisWindowPlayer === player_2_Name) {
 						$("#gameMessage").html("<p>Waiting for " + player_1_Name + " to choose.</p>");
 					}
-					$(".leftSidePanel").addClass('currentPlayer');
-					$(".rightSidePanel").removeClass('currentPlayer');
+					$(".leftBorder").addClass('currentPlayer');
+					$(".rightBorder").removeClass('currentPlayer');
 				}
 			}
 
@@ -294,8 +297,8 @@ database.ref("/game").on("value", function(snapshot) {
 				if(thisWindowPlayer === player_1_Name) {
 					$("#gameMessage").html("<p>Waiting for " + player_2_Name + " to choose.</p>");
 				}
-				$(".leftSidePanel").removeClass('currentPlayer');
-				$(".rightSidePanel").addClass('currentPlayer');
+				$(".leftBorder").removeClass('currentPlayer');
+				$(".rightBorder").addClass('currentPlayer');
 			}
 
 			if(gameState.playerTwoMadeChoice && turns === 1) {
@@ -309,8 +312,8 @@ database.ref("/game").on("value", function(snapshot) {
 				// This thing should happen in both windows
 				// Calculate the outcome of game
 				// Remove current player style
-				$(".leftSidePanel").removeClass('currentPlayer');
-				$(".rightSidePanel").removeClass('currentPlayer');
+				$(".leftBorder").removeClass('currentPlayer');
+				$(".rightBorder").removeClass('currentPlayer');
 				
 				// Validate choices and rps game
 				rpsGameValidate(player_1_Choice,player_2_Choice);
@@ -353,10 +356,6 @@ database.ref("/game").on("value", function(snapshot) {
 		}
 	}
 });
-
-function updateWinsAndLossesInUI() {
-
-}
 
 // On click of rock, paper or scissors game choices
 $(".choices").on("click", function() {
