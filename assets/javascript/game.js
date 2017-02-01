@@ -21,11 +21,11 @@ var gameState = {
 
 // Firebase configuration
 var config = {
-    apiKey: "AIzaSyAILOg8-tbxJw_UbDgCPf5aeEuwVXMehLU",
-    authDomain: "rpsforkukki.firebaseapp.com",
-    databaseURL: "https://rpsforkukki.firebaseio.com",
-    storageBucket: "rpsforkukki.appspot.com",
-    messagingSenderId: "158144925744"
+  	apiKey: "AIzaSyALngADSiFUCFCzIpx8eOoz_qByHqgAtQI",
+    authDomain: "rps-multiplayer-b232b.firebaseapp.com",
+    databaseURL: "https://rps-multiplayer-b232b.firebaseio.com",
+    storageBucket: "rps-multiplayer-b232b.appspot.com",
+    messagingSenderId: "508808037478"
   };
 
 firebase.initializeApp(config);
@@ -59,7 +59,13 @@ $("#startButton").on("click", function(event) {
 		// Listening to disconnection of player 1 and removing from db
 		player1Ref.onDisconnect().remove();
 
-		database.ref("/chats/sysmessage").onDisconnect().set(thisWindowPlayer + " disconnected.");
+		sysMessageData = {
+			userName: "System",
+			comment: thisWindowPlayer + " disconnected.",
+			timeStamp: firebase.database.ServerValue.TIMESTAMP
+		}
+		
+		database.ref("/chats/sysmessage").onDisconnect().set(sysMessageData);
 
 	}else if(playerCount === 1 && gameState.playerOneJoined) {
 		// If number of players = 1, take name as player 2 
@@ -79,7 +85,13 @@ $("#startButton").on("click", function(event) {
 		// Listening to disconnection of player 2 and removing from db
 		player2Ref.onDisconnect().remove();
 
-		database.ref("/chats/sysmessage").onDisconnect().set(thisWindowPlayer + " disconnected.");
+		sysMessageData = {
+			userName: "System",
+			comment: thisWindowPlayer + " disconnected.",
+			timeStamp: firebase.database.ServerValue.TIMESTAMP
+		}
+		
+		database.ref("/chats/sysmessage").onDisconnect().set(sysMessageData);
 
 	}else if(playerCount === 1 && !gameState.playerOneJoined) {
 		// If number of players = 1, take name as player 2 
@@ -100,9 +112,11 @@ $("#startButton").on("click", function(event) {
 		player1Ref.onDisconnect().remove();
 
 		sysMessageData = {
+			userName: "System",
 			comment: thisWindowPlayer + " disconnected.",
 			timeStamp: firebase.database.ServerValue.TIMESTAMP
 		}
+
 		database.ref("/chats/sysmessage").onDisconnect().set(sysMessageData);
 
 	}
@@ -165,6 +179,11 @@ database.ref("/game").on("value", function(snapshot) {
 		player_2_Wins = (player_2_Wins === null) ? 0 : player_2_Wins;
 		player_2_Losses = player2Snapshot.child("losses").val();
 		player_2_Losses = (player_2_Losses === null) ? 0 : player_2_Losses;
+		
+		$("#leftWinsLossesCounter> .wins").html(player_1_Wins);
+		$("#leftWinsLossesCounter> .losses").html(player_1_Losses);
+		$("#rightWinsLossesCounter> .wins").html(player_2_Wins);
+		$("#rightWinsLossesCounter> .losses").html(player_2_Losses);
 	}
 	// Geting turns from database
 	turns = snapshot.child("turns").val();
@@ -335,6 +354,9 @@ database.ref("/game").on("value", function(snapshot) {
 	}
 });
 
+function updateWinsAndLossesInUI() {
+
+}
 
 // On click of rock, paper or scissors game choices
 $(".choices").on("click", function() {
@@ -415,7 +437,11 @@ database.ref("/chats").orderByChild("timeStamp").limitToLast(7).on("child_added"
 	$("#chatWindow").scrollTop($("#chatWindow")[0].scrollHeight);
 });
 
-database.ref("/chats/sysmessage").on("value", function(snapshot) {
-	$("#chatWindow").append("<p>"+snapshot.val()+"</p>");
+database.ref("/chats/sysmessage").on("value", function(childSnapshot) {
+ 	chatAuthor = childSnapshot.val().userName;
+	comment = childSnapshot.val().comment;
+	time = moment(childSnapshot.val().timeStamp,'x').format("MM/DD/YY hh:mm A");
+	// Retrieving chatData to display in chat window
+	$("#chatWindow").append("<p><span class='chatUserInfo'>" + chatAuthor + " @ " + time + ": </span><br>" + comment + "</p>");
 	$("#chatWindow").scrollTop($("#chatWindow")[0].scrollHeight);
 });

@@ -43,7 +43,7 @@ body {
 }
 
 .leftSidePanel, .rightSidePanel {
-	padding: 30px;
+	padding: 10px;
 	margin: 7px;
 }
 
@@ -89,8 +89,7 @@ body {
 	background-color: white;
 	font-size: 20px;
 	padding: 15px;
-	font-family: 'Itim', cursive;
-	/*font-family: 'Sriracha', cursive;*/
+	font-family: 'Sriracha', cursive;
 }
 
 label {
@@ -133,8 +132,7 @@ img {
 
 .chatUserInfo {
 	background-color: rgba(40,255,222,0.4);
-	font-family: 'Sriracha', cursive;
-	font-size: 17px;
+	font-size: 16px;
 }
 
 
