@@ -37,14 +37,18 @@ body {
 }
 
 .leftBorder, .rightBorder {
-	margin: 10px;
+	margin: 5px;
 	border-radius: 10px;
 	border: 2px solid gray;
 }
 
+.displayBeforeStart {
+	margin-top: -10px;
+}
+
 .leftSidePanel, .rightSidePanel {
 	padding: 10px;
-	margin: 7px;
+	margin: 5px;
 }
 
 .currentPlayer {                 /*Add current player to .leftBorder and .rightBorder, no leftSidePanel rightSidePenel */
@@ -62,7 +66,7 @@ body {
 }
 
 .messages {
-	margin-top: 25px;
+	margin-top: 15px;
 	padding: 30px;
 	font-size: 40px;
 	font-family: 'Itim', cursive;
@@ -72,13 +76,23 @@ body {
 
 	font-size: 28px;
 	background: url("../images/whitebg.jpg");
+	min-height: 40px;
+	border: 2px solid grey;
+	border-radius: 10px;
+	margin-right: 30px;
+	margin-left: 30px;
+	/*padding: 5px;*/
+	/*font-family: 'Itim', cursive;*/
+}
+
+#rightWinsLossesCounter, #leftWinsLossesCounter {
+	font-size: 28px;
+	background: url("../images/whitebg.jpg");
 	min-height: 60px;
 	border: 2px solid grey;
 	border-radius: 10px;
 	margin-right: 30px;
 	margin-left: 30px;
-	padding: 5px;
-	font-family: 'Itim', cursive;
 }
 
 #chatWindow {
@@ -113,10 +127,15 @@ img {
 	border: 2px solid gray;
 	border-radius: 10px;
 	background-color: #f7f7f7;
-	height: 100px;
-	width: 100px;
+	height: 80px;
+	width: 80px;
 	margin: 8px;
 	cursor: pointer;
+}
+
+.topDisplay {
+	height: 100px;
+	margin-bottom: -5px;
 }
 
 .hidden {
@@ -124,8 +143,8 @@ img {
 }
 
 .chosen {
-	height: 130px;
-	width: 130px;
+	height: 100px;
+	width: 100px;
 	display: inline-block;
 	margin: 0px;
 }
@@ -144,8 +163,6 @@ img {
 	height: 40px;
 	font-size: 20px;
 	margin-left: -40px;
-	/*padding-left: -12px;*/
-	/*padding-right: -12px;*/
 }
 
 #postComment {
@@ -154,11 +171,30 @@ img {
 
 .playerMessage {
 	font-size: 28px;
-	min-height: 50px;
-	margin-bottom: 30px;
+	/*margin-bottom: 15px;*/
 }
 
-/*.winsLossesCounter {
+/* Small Devices, Tablets */
+@media only screen and (max-width : 768px) {
+	.leftSidePanel, .rightSidePanel {
+		padding: 10px;
+		margin: 5px;
 
+	}
+
+	.leftBorder, .rightBorder {
+		margin: 5px;
+		border-radius: 10px;
+		border: 2px solid gray;
+	}
+
+	img {
+		border: 2px solid gray;
+		border-radius: 10px;
+		background-color: #f7f7f7;
+		height: 80px;
+		width: 80px;
+		margin: 8px;
+		cursor: pointer;
+	}
 }
-*/

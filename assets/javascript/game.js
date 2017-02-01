@@ -34,6 +34,8 @@ database = firebase.database();
 
 // Hiding rock paper scissors choices before start of game
 $(".choices").hide();
+$(".playerMessage").hide();
+$("#gameMessage").hide();
 
 // On click of Start Button
 $("#startButton").on("click", function(event) {
@@ -183,10 +185,10 @@ database.ref("/game").on("value", function(snapshot) {
 		player_2_Losses = player2Snapshot.child("losses").val();
 		player_2_Losses = (player_2_Losses === null) ? 0 : player_2_Losses;
 		
-		$("#leftWinsLossesCounter> .wins").html(player_1_Wins);
-		$("#leftWinsLossesCounter> .losses").html(player_1_Losses);
-		$("#rightWinsLossesCounter> .wins").html(player_2_Wins);
-		$("#rightWinsLossesCounter> .losses").html(player_2_Losses);
+		$("#leftWinsLossesCounter> .wins").html("Wins: " + player_1_Wins);
+		$("#leftWinsLossesCounter> .losses").html("Losses: " + player_1_Losses);
+		$("#rightWinsLossesCounter> .wins").html("Wins: " + player_2_Wins);
+		$("#rightWinsLossesCounter> .losses").html("Losses: " + player_2_Losses);
 	}
 	// Geting turns from database
 	turns = snapshot.child("turns").val();
@@ -199,6 +201,7 @@ database.ref("/game").on("value", function(snapshot) {
 	*/
 	if(gameState.playerOneJoined) {
 		if(thisWindowPlayer === player_1_Name) {
+			$(".playerMessage").show();
 			$("#playerMessage").html("Hi " + player_1_Name + ". You are Player 1.");
 		}
 		//Display Player 1 details on all windows
@@ -208,14 +211,16 @@ database.ref("/game").on("value", function(snapshot) {
 			$("#gameStat2").show();
 			$("#player_2_Name").empty();
 			$("#gameMessage").empty();
+			$("#gameMessage").hide();
 			$(".choices").hide();
 		}	
 	}else {
-		$("#playerMessage").empty();
+		$(".playerMessage").hide();
 	}
 
 	if(gameState.playerTwoJoined) {
 		if(thisWindowPlayer === player_2_Name) {
+			$(".playerMessage").show();
 			$("#playerMessage").html("Hi " + player_2_Name + ". You are Player 2.");
 		}
 		//Display Player 2 details on all windows
@@ -227,6 +232,7 @@ database.ref("/game").on("value", function(snapshot) {
 			$("#gameStat1").show();
 			$("#player_1_Name").empty();
 			$("#gameMessage").empty();
+			$("#gameMessage").hide();
 		}
 	}
 
@@ -236,6 +242,7 @@ database.ref("/game").on("value", function(snapshot) {
 		if(thisWindowPlayer === "Guest") {
 			$(".displayBeforeStart").hide();
 			$("#gameMessage").html("A game is in progress. You may wait until they're done playing or come back later.");
+			$("#gameMessage").show();		
 		}else {
 			//If not Guest or rather if they are the players
 			if(!gameState.gameInProgress && !gameState.playerOneMadeChoice && !gameState.playerTwoMadeChoice) {
@@ -270,10 +277,12 @@ database.ref("/game").on("value", function(snapshot) {
 				if(turns === 0) {
 					if(thisWindowPlayer === player_1_Name) {
 						$("#gameMessage").html("<p>It's your turn.</p>");
+						$("#gameMessage").show();
 						$(".leftSidePanel> .choices").show();
 					}
 					if(thisWindowPlayer === player_2_Name) {
 						$("#gameMessage").html("<p>Waiting for " + player_1_Name + " to choose.</p>");
+						$("#gameMessage").show();
 					}
 					$(".leftBorder").addClass('currentPlayer');
 					$(".rightBorder").removeClass('currentPlayer');
@@ -292,10 +301,12 @@ database.ref("/game").on("value", function(snapshot) {
 				// And player 2 should also be presented to choose
 				if(thisWindowPlayer === player_2_Name) {
 					$("#gameMessage").html("<p>It's your turn.</p>");
+					$("#gameMessage").show();
 					$(".rightSidePanel> .choices").removeClass("chosen").attr('disabled', false).show();
 				}
 				if(thisWindowPlayer === player_1_Name) {
 					$("#gameMessage").html("<p>Waiting for " + player_2_Name + " to choose.</p>");
+					$("#gameMessage").show();
 				}
 				$(".leftBorder").removeClass('currentPlayer');
 				$(".rightBorder").addClass('currentPlayer');
