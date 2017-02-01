@@ -8,9 +8,6 @@ var player_1_Name, player_2_Name = "";
 var thisWindowPlayer = "Guest";
 var player1Ref, player2Ref;
 var turns = 0;
-var timeStamp;
-var disconnectedPlayer_1_name;
-var disconnectedPlayer_2_name;
 
 var gameState = {
 	playerOneJoined: false,
@@ -56,13 +53,13 @@ $("#startButton").on("click", function(event) {
 		thisWindowPlayer = player_1_Name;
 
 		// Storing player 1 db reference in variable
-		player1Ref = database.ref("players/1");
+		player1Ref = database.ref("game/players/1");
 		// Creating new player in database and passing player data to it
 		player1Ref.set(playerData);
 		// Listening to disconnection of player 1 and removing from db
 		player1Ref.onDisconnect().remove();
-		// Setting disconnectedPlayerName as this player name for future use
-		disconnectedPlayer_1_name = thisWindowPlayer;
+
+		database.ref("/chats/sysmessage").onDisconnect().set(thisWindowPlayer + " disconnected.");
 
 	}else if(playerCount === 1 && gameState.playerOneJoined) {
 		// If number of players = 1, take name as player 2 
@@ -76,11 +73,13 @@ $("#startButton").on("click", function(event) {
 		// Storing current window player in variable thisWindowPlayer to display customized messages
 		thisWindowPlayer = player_2_Name;
 		// Storing player 1 db reference in variable
-		player2Ref = database.ref("players/2");
+		player2Ref = database.ref("game/players/2");
 		// Creating new player in database and passing player data to it
 		player2Ref.set(playerData);
 		// Listening to disconnection of player 2 and removing from db
 		player2Ref.onDisconnect().remove();
+
+		database.ref("/chats/sysmessage").onDisconnect().set(thisWindowPlayer + " disconnected.");
 
 	}else if(playerCount === 1 && !gameState.playerOneJoined) {
 		// If number of players = 1, take name as player 2 
@@ -94,23 +93,31 @@ $("#startButton").on("click", function(event) {
 		// Storing current window player in variable thisWindowPlayer to display customized messages
 		thisWindowPlayer = player_1_Name;
 		// Storing player 1 db reference in variable
-		player1Ref = database.ref("players/1");
+		player1Ref = database.ref("game/players/1");
 		// Creating new player in database and passing player data to it
 		player1Ref.set(playerData);
 		// Listening to disconnection of player 2 and removing from db
 		player1Ref.onDisconnect().remove();
+
+		sysMessageData = {
+			comment: thisWindowPlayer + " disconnected.",
+			timeStamp: firebase.database.ServerValue.TIMESTAMP
+		}
+		database.ref("/chats/sysmessage").onDisconnect().set(sysMessageData);
+
 	}
 	// Hide input form
 	$(".displayBeforeStart").hide();
 });
 
-database.ref("/").on("value", function(snapshot) {
+database.ref("/game").on("value", function(snapshot) {
 
 	// Getting playerCount from database
 	playerCount = snapshot.child("players").numChildren();
 	// Declaring variables for player 1 and player 2 ref snapshots
 	var player1Snapshot = snapshot.child("players").child("1");
 	var player2Snapshot = snapshot.child("players").child("2");
+	
 	// Getting player names from database
 	player_1_Name = player1Snapshot.child("name").val();
 	player_2_Name = player2Snapshot.child("name").val();
@@ -131,7 +138,6 @@ database.ref("/").on("value", function(snapshot) {
 		gameState.gameInProgress = false;
 		gameState.playerOneMadeChoice = false;
 		gameState.playerTwoMadeChoice = false;
-		
 	}else if(playerCount === 1 && player_2_Name !== null) {
 		gameState.playerOneJoined = false;
 		gameState.playerTwoJoined = true;
@@ -181,9 +187,7 @@ database.ref("/").on("value", function(snapshot) {
 			$("#player_2_Name").empty();
 			$("#gameMessage").empty();
 			$(".choices").hide();
-		}
-		// Setting disconnectedPlayerName as this player name for future use
-		disconnectedPlayer_1_name = thisWindowPlayer;	
+		}	
 	}else {
 		$("#playerMessage").empty();
 	}
@@ -195,22 +199,12 @@ database.ref("/").on("value", function(snapshot) {
 		//Display Player 2 details on all windows
 		$("#player_2_Name").html(player_2_Name);
 		$("#gameStat2").hide();
-		// Setting disconnectedPlayerName as this player name for future use
-		disconnectedPlayer_2_name = thisWindowPlayer;
 
 		//Special condition where Player 1 disconnects and we have a player 2
 		if(!gameState.playerOneJoined) {
 			$("#gameStat1").show();
 			$("#player_1_Name").empty();
 			$("#gameMessage").empty();
-			if(thisWindowPlayer === player_2_name) {
-				disconnectData = {
-					chatAuthor : disconnectedPlayer_1_name,
-					timeStamp : firebase.database.ServerValue.TIMESTAMP,
-					comment : " disconnected"
-				}
-				database.ref("/chats").push(disconnectData);
-			}
 		}
 	}
 
@@ -231,11 +225,11 @@ database.ref("/").on("value", function(snapshot) {
 					if(gameState.playerOneWinUpdated) {
 						gameState.playerOneWinUpdated = false;
 						++player_2_Losses;
-						database.ref("/players/2/losses").set(player_2_Losses);
+						database.ref("/game/players/2/losses").set(player_2_Losses);
 					}else if(gameState.playerTwoWinUpdated) {
 						gameState.playerTwoWinUpdated = false;
 						++player_1_Losses;
-						database.ref("/players/1/losses").set(player_1_Losses);
+						database.ref("/game/players/1/losses").set(player_1_Losses);
 					}
 				}else {
 					//This else block is the normal condition that kickstarts a new game.
@@ -244,9 +238,9 @@ database.ref("/").on("value", function(snapshot) {
 					turns = 0;
 					// Kickstart game from the player 2 window only
 					if(thisWindowPlayer === player_2_Name) {
-						database.ref("/turns").set(turns);
+						database.ref("/game/turns").set(turns);
 					}
-					database.ref("/turns").onDisconnect().remove();	
+					database.ref("/game/turns").onDisconnect().remove();	
 				}		
 			}else if(gameState.gameInProgress && !gameState.playerOneMadeChoice && !gameState.playerTwoMadeChoice){
 				// This means game is in progress.
@@ -259,8 +253,8 @@ database.ref("/").on("value", function(snapshot) {
 					if(thisWindowPlayer === player_2_Name) {
 						$("#gameMessage").html("<p>Waiting for " + player_1_Name + " to choose.</p>");
 					}
-					$(".leftBorder").addClass('currentPlayer');
-					$(".rightBorder").removeClass('currentPlayer');
+					$(".leftSidePanel").addClass('currentPlayer');
+					$(".rightSidePanel").removeClass('currentPlayer');
 				}
 			}
 
@@ -269,7 +263,7 @@ database.ref("/").on("value", function(snapshot) {
 				if(thisWindowPlayer === player_1_Name) {
 					// Update turns and set in database
 					turns = 1;
-					database.ref("/turns").set(turns);
+					database.ref("/game/turns").set(turns);
 				}
 			}else if(gameState.playerOneMadeChoice && turns === 1 && !gameState.playerTwoMadeChoice) {
 				// Do display work for both windows as this means turns is updated to 1
@@ -281,8 +275,8 @@ database.ref("/").on("value", function(snapshot) {
 				if(thisWindowPlayer === player_1_Name) {
 					$("#gameMessage").html("<p>Waiting for " + player_2_Name + " to choose.</p>");
 				}
-				$(".leftBorder").removeClass('currentPlayer');
-				$(".rightBorder").addClass('currentPlayer');
+				$(".leftSidePanel").removeClass('currentPlayer');
+				$(".rightSidePanel").addClass('currentPlayer');
 			}
 
 			if(gameState.playerTwoMadeChoice && turns === 1) {
@@ -290,7 +284,7 @@ database.ref("/").on("value", function(snapshot) {
 				if(thisWindowPlayer === player_2_Name) {
 					// Update turns and set in database
 					turns = 2;
-					database.ref("/turns").set(turns);
+					database.ref("/game/turns").set(turns);
 				}
 			} else if(gameState.playerTwoMadeChoice && turns === 2){
 				// This thing should happen in both windows
@@ -323,17 +317,17 @@ database.ref("/").on("value", function(snapshot) {
 				if(thisWindowPlayer === player_1_Name) {
 					// Update turns and set in db
 					turns = 0;
-					database.ref("/turns").set(turns);
+					database.ref("/game/turns").set(turns);
 					// Removing choices from db for new game
-					database.ref("/players/1/choice").remove();
-					database.ref("/players/2/choice").remove();
+					database.ref("/game/players/1/choice").remove();
+					database.ref("/game/players/2/choice").remove();
 
 					if(winner === player_1_Name) {
 						++player_1_Wins;
-						database.ref("/players/1/wins").set(player_1_Wins);
+						database.ref("/game/players/1/wins").set(player_1_Wins);
 					}else if(winner === player_2_Name) {
 						++player_2_Wins;
-						database.ref("/players/2/wins").set(player_2_Wins);
+						database.ref("/game/players/2/wins").set(player_2_Wins);
 					}
 				}
 			}
@@ -354,7 +348,7 @@ $(".choices").on("click", function() {
 		player_1_Choice = $(this).data('choice');
 		gameState.playerOneMadeChoice = true;
 		// Adding choice to database
-		database.ref("/players/1/choice").set(player_1_Choice);
+		database.ref("/game/players/1/choice").set(player_1_Choice);
 	}else if($(this).parent().hasClass('rightSidePanel')) {
 		// Hide choices
 		$(".rightSidePanel> .choices").hide();
@@ -362,7 +356,7 @@ $(".choices").on("click", function() {
 		player_2_Choice = $(this).data('choice');
 		gameState.playerTwoMadeChoice = true;
 		// Adding player 2 choice to the database
-		database.ref("/players/2/choice").set(player_2_Choice);
+		database.ref("/game/players/2/choice").set(player_2_Choice);
 	}
 	// Show only the chosen one
 	$(this).show();
@@ -419,20 +413,9 @@ database.ref("/chats").orderByChild("timeStamp").limitToLast(7).on("child_added"
 	// Retrieving chatData to display in chat window
 	$("#chatWindow").append("<p><span class='chatUserInfo'>" + chatAuthor + " @ " + time + ": </span><br>" + comment + "</p>");
 	$("#chatWindow").scrollTop($("#chatWindow")[0].scrollHeight);
-})
+});
 
-
-// if(thisWindowPlayer === player_1_Name) {
-					// 	disconnectData = {
-					// 		chatAuthor : "System",
-					// 		timeStamp : moment(firebase.database.ServerValue.TIMESTAMP, 'x').format("MM/DD/YY hh:mm A"),
-					// 		comment : player_1_Name + "Disconnected"
-					// 	}
-					// }else if(thisWindowPlayer === player_2_Name) {
-					// 	disconnectData = {
-					// 		chatAuthor : "System",
-					// 		timeStamp : moment(firebase.database.ServerValue.TIMESTAMP, 'x').format("MM/DD/YY hh:mm A"),
-					// 		comment : player_2_Name + "Disconnected"
-					// 	}
-					// }
-					// database.ref("/chats/disconnected").onDisconnect().set(disconnectData);
+database.ref("/chats/sysmessage").on("value", function(snapshot) {
+	$("#chatWindow").append("<p>"+snapshot.val()+"</p>");
+	$("#chatWindow").scrollTop($("#chatWindow")[0].scrollHeight);
+});
