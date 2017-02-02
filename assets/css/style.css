@@ -52,7 +52,8 @@ body {
 }
 
 .currentPlayer {                 /*Add current player to .leftBorder and .rightBorder, no leftSidePanel rightSidePenel */
-	background-color: #153a99;
+	background: url("../images/bg.jpeg") no-repeat;
+	background-size: 100% 100%;
 }
 
 
