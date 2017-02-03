@@ -141,15 +141,18 @@ database.ref("/game").on("value", function(snapshot) {
 	player_1_Name = player1Snapshot.child("name").val();
 	player_2_Name = player2Snapshot.child("name").val();
 
+	// Player1 exists
 	if(playerCount === 1 && player_1_Name !== null) {
 		gameState.playerOneJoined = true;
 		gameState.playerTwoJoined = false;
 		gameState.gameInProgress = false;
 		gameState.playerOneMadeChoice = false;
 		gameState.playerTwoMadeChoice = false;
+	// Players 1 and 2 exist
 	}else if(playerCount === 2 && player_2_Name !== null) {
 		gameState.playerOneJoined = true;
 		gameState.playerTwoJoined = true;
+	// Player 1 disconnected
 	}else if(playerCount === 1 && player_1_Name === null) {
 		gameState.playerOneJoined = false;
 		gameState.playerTwoJoined = true;
@@ -170,8 +173,8 @@ database.ref("/game").on("value", function(snapshot) {
 	player_2_Choice = player2Snapshot.child("choice").val();
 
 
-	// Determining player one and two made choice for game state when game in progress
-	// Game was kicked to progress when player 2 joined previously
+	// Determining if player 1 and 2 made choice for game state when game in progress
+	// Game in progress when player 2 joined previously
 	if(gameState.gameInProgress) {
 		gameState.playerOneMadeChoice = (player_1_Choice !== null);
 		gameState.playerTwoMadeChoice = (player_2_Choice !== null);
@@ -244,12 +247,12 @@ database.ref("/game").on("value", function(snapshot) {
 			$("#gameMessage").html("A game is in progress. You may wait until they're done playing or come back later.");
 			$("#gameMessage").show();		
 		}else {
-			//If not Guest or rather if they are the players
+			// If not Guest or if they are the players
 			if(!gameState.gameInProgress && !gameState.playerOneMadeChoice && !gameState.playerTwoMadeChoice) {
 				
-				//Gather condition when wins are updated so losses can be updated accordingly
-				//This condition was added during the end of coding phase because wins and losses wont
-				//update sequentially
+				// Gather condition when wins are updated so losses can be updated accordingly
+				// This condition was added during the end of coding phase because wins and losses won't
+				// update sequentially
 				if(gameState.playerOneWinUpdated || gameState.playerTwoWinUpdated) {
 					if(gameState.playerOneWinUpdated) {
 						gameState.playerOneWinUpdated = false;
@@ -261,9 +264,9 @@ database.ref("/game").on("value", function(snapshot) {
 						database.ref("/game/players/1/losses").set(player_1_Losses);
 					}
 				}else {
-					//This else block is the normal condition that kickstarts a new game.
+					// Else block denotes the normal condition that kickstarts a new game.
 					gameState.gameInProgress = true;
-					// Set turn 0 in database indicating game begun and player 1 can choose
+					// Set turn 0 in database indicating game has begun and player 1 can choose
 					turns = 0;
 					// Kickstart game from the player 2 window only
 					if(thisWindowPlayer === player_2_Name) {
@@ -272,8 +275,8 @@ database.ref("/game").on("value", function(snapshot) {
 					database.ref("/game/turns").onDisconnect().remove();	
 				}		
 			}else if(gameState.gameInProgress && !gameState.playerOneMadeChoice && !gameState.playerTwoMadeChoice){
-				// This means game is in progress.
-				// Now we have to show choices for players
+				// Game is in progress.
+				// Show choices for players
 				if(turns === 0) {
 					if(thisWindowPlayer === player_1_Name) {
 						$("#gameMessage").html("<p>It's your turn.</p>");
@@ -290,15 +293,15 @@ database.ref("/game").on("value", function(snapshot) {
 			}
 
 			if(gameState.playerOneMadeChoice && turns === 0 && !gameState.playerTwoMadeChoice) {
-				// If player one made the choice and if current window is player one update turns to 1
+				// If player one chose and if current window is player one update turns to 1
 				if(thisWindowPlayer === player_1_Name) {
 					// Update turns and set in database
 					turns = 1;
 					database.ref("/game/turns").set(turns);
 				}
 			}else if(gameState.playerOneMadeChoice && turns === 1 && !gameState.playerTwoMadeChoice) {
-				// Do display work for both windows as this means turns is updated to 1
-				// And player 2 should also be presented to choose
+				// Display messages on both windows when turns updated to 1
+				// Player 2 allowed to choose
 				if(thisWindowPlayer === player_2_Name) {
 					$("#gameMessage").html("<p>It's your turn.</p>");
 					$("#gameMessage").show();
@@ -313,14 +316,14 @@ database.ref("/game").on("value", function(snapshot) {
 			}
 
 			if(gameState.playerTwoMadeChoice && turns === 1) {
-				// If player two made the choice and if current window is player two update turns to 2
+				// If player 2 chose and if current window is player 2 update turns to 2
 				if(thisWindowPlayer === player_2_Name) {
 					// Update turns and set in database
 					turns = 2;
 					database.ref("/game/turns").set(turns);
 				}
 			} else if(gameState.playerTwoMadeChoice && turns === 2){
-				// This thing should happen in both windows
+				// Condition to happen in both windows
 				// Calculate the outcome of game
 				// Remove current player style
 				$(".leftBorder").removeClass('currentPlayer');
@@ -341,12 +344,11 @@ database.ref("/game").on("value", function(snapshot) {
 				if(winner === player_2_Name && !gameState.playerTwoWinUpdated) {
 					gameState.playerTwoWinUpdated = true;
 				}
-				//Note that there are so many DB calls but
-				//you dont need to worry about any other critical
-				//DB calls getting called in value callback as everything is
-				//controlled with the help of gamestate flags.
+				
+				// DB calls getting called in onvalue callback is
+				// controlled with the help of gamestate flags.
 
-				// Giving Player 1 the honors of doing db updates and resetting game
+				// Player 1 updates and resets game
 				if(thisWindowPlayer === player_1_Name) {
 					// Update turns and set in db
 					turns = 0;
@@ -372,7 +374,7 @@ database.ref("/game").on("value", function(snapshot) {
 $(".choices").on("click", function() {
 
 	// Checking if player 1 chose or player 2
-	// Player 1 is housed in the leftSidePanel
+	// Player 1 game choices exist only in leftSidePanel
 	if($(this).parent().hasClass('leftSidePanel')) {
 		// Hide the choices options
 		$(".leftSidePanel> .choices").hide();
